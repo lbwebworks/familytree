@@ -43,7 +43,7 @@
       <tbody>
         <tr v-for="m in paginatedMembers" :key="m.id">
           <td class="border px-2 py-1 text-center">
-            <img :src="m.photo || '/photos/default.png'" alt="photo" class="w-10 h-10 rounded-full mx-auto" />
+            <img :src="m.photo || './photos/default.jpg'" @error="$event.target.src = './photos/default.jpg'" alt="photo" class="w-10 h-10 rounded-full mx-auto" />
           </td>
           <td class="border px-2 py-1">
             {{ m.lastname }}, {{ m.firstname }} {{ m.middlename }}

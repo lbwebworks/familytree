@@ -6,10 +6,10 @@
       "firstname": "Alfredo",
       "middlename": "Dawey",
       "birthdate": "1950-01-01",
-      "photo": "./photos/default.jpg",
+      "photo": "",
       "remarks": "",
       "spousename": "Angelina Roque Budaden",
-      "spousephoto": "./photos/default.jpg",
+      "spousephoto": "",
       "parent": "root",
       "gender": "Male"
     },
@@ -19,11 +19,11 @@
       "firstname": "Lee",
       "middlename": "Roque",
       "birthdate": "1990-12-14",
-      "photo": "./photos/default.jpg",
+      "photo": "./photos/photo_1769431956875.jpg",
       "remarks": "",
       "parent": "1",
       "spousename": "Krishan Joy Lacza Budaden",
-      "spousephoto": "./photos/default.jpg",
+      "spousephoto": "",
       "gender": "Male"
     },
     {
@@ -32,11 +32,11 @@
       "middlename": "",
       "lastname": "Child",
       "birthdate": "2026-01-16",
-      "photo": "./photos/default.jpg",
+      "photo": "./photos/photo_1769431908410.jpg",
       "remarks": "",
       "parent": null,
       "spousename": "",
-      "spousephoto": "./photos/default.jpg",
+      "spousephoto": "",
       "gender": "Female"
     },
     {
@@ -45,11 +45,11 @@
       "middlename": "Roque",
       "lastname": "Budaden",
       "birthdate": "1982-01-01",
-      "photo": "./photos/default.jpg",
+      "photo": "",
       "remarks": "",
       "parent": "1",
       "spousename": "Karen Valdez",
-      "spousephoto": "./photos/default.jpg",
+      "spousephoto": "",
       "gender": "Male"
     },
     {
@@ -58,11 +58,11 @@
       "middlename": "Roque",
       "lastname": "Budaden",
       "birthdate": "1984-01-02",
-      "photo": "./photos/default.jpg",
+      "photo": "",
       "remarks": "",
       "parent": "1",
       "spousename": "",
-      "spousephoto": "./photos/default.jpg",
+      "spousephoto": "",
       "gender": "Male"
     },
     {
@@ -72,11 +72,11 @@
       "lastname": "Dimara",
       "birthdate": "1986-01-03",
       "gender": "Female",
-      "photo": "./photos/default.jpg",
+      "photo": "",
       "remarks": "",
       "parent": "1",
       "spousename": "",
-      "spousephoto": "./photos/default.jpg"
+      "spousephoto": ""
     },
     {
       "id": "1769316401428",
@@ -85,11 +85,11 @@
       "lastname": "Budaden",
       "birthdate": "1988-01-04",
       "gender": "Male",
-      "photo": "./photos/default.jpg",
+      "photo": "",
       "remarks": "",
       "parent": "1",
       "spousename": "",
-      "spousephoto": "./photos/default.jpg"
+      "spousephoto": ""
     },
     {
       "id": "1769316433374",
@@ -98,11 +98,11 @@
       "lastname": "Budaden",
       "birthdate": "1993-01-06",
       "gender": "Female",
-      "photo": "./photos/default.jpg",
+      "photo": "",
       "remarks": "",
       "parent": "1",
       "spousename": "",
-      "spousephoto": "./photos/default.jpg"
+      "spousephoto": ""
     },
     {
       "id": "1769316456740",
@@ -111,11 +111,11 @@
       "lastname": "Budaden",
       "birthdate": "1996-01-07",
       "gender": "Male",
-      "photo": "./photos/default.jpg",
+      "photo": "",
       "remarks": "",
       "parent": "1",
       "spousename": "",
-      "spousephoto": "./photos/default.jpg"
+      "spousephoto": ""
     },
     {
       "id": "1769316485450",
@@ -124,11 +124,11 @@
       "lastname": "Budaden",
       "birthdate": "1999-01-08",
       "gender": "Male",
-      "photo": "./photos/default.jpg",
+      "photo": "",
       "remarks": "",
       "parent": "1",
       "spousename": "",
-      "spousephoto": "./photos/default.jpg"
+      "spousephoto": ""
     },
     {
       "id": "1769316519380",
@@ -137,11 +137,11 @@
       "lastname": "Budaden",
       "birthdate": "2026-01-09",
       "gender": "Female",
-      "photo": "./photos/default.jpg",
+      "photo": "",
       "remarks": "",
       "parent": "1769313667349",
       "spousename": "",
-      "spousephoto": "./photos/default.jpg"
+      "spousephoto": ""
     },
     {
       "id": "1769316549766",
@@ -150,11 +150,11 @@
       "lastname": "Dimara",
       "birthdate": "2026-01-10",
       "gender": "Female",
-      "photo": "./photos/default.jpg",
+      "photo": "",
       "remarks": "",
       "parent": "1769316369137",
       "spousename": "",
-      "spousephoto": "./photos/default.jpg"
+      "spousephoto": ""
     },
     {
       "id": "1769316586300",
@@ -163,11 +163,11 @@
       "lastname": "Budaden",
       "birthdate": "2026-01-11",
       "gender": "Male",
-      "photo": "./photos/default.jpg",
+      "photo": "",
       "remarks": "",
       "parent": "1769313691271",
       "spousename": "",
-      "spousephoto": "./photos/default.jpg"
+      "spousephoto": ""
     },
     {
       "id": "1769316620818",
@@ -176,11 +176,11 @@
       "lastname": "Budaden",
       "birthdate": "2026-01-12",
       "gender": "Male",
-      "photo": "./photos/default.jpg",
+      "photo": "",
       "remarks": "",
       "parent": "1769313667349",
       "spousename": "",
-      "spousephoto": "./photos/default.jpg"
+      "spousephoto": ""
     },
     {
       "id": "1769316641750",
@@ -189,11 +189,11 @@
       "lastname": "Dimara",
       "birthdate": "2026-01-13",
       "gender": "Female",
-      "photo": "./photos/default.jpg",
+      "photo": "",
       "remarks": "",
       "parent": "1769316369137",
       "spousename": "",
-      "spousephoto": "./photos/default.jpg"
+      "spousephoto": ""
     },
     {
       "id": "1769316661762",
@@ -202,11 +202,11 @@
       "lastname": "Wacnang",
       "birthdate": "2026-01-14",
       "gender": "Male",
-      "photo": "./photos/default.jpg",
+      "photo": "",
       "remarks": "",
       "parent": "1769316433374",
       "spousename": "",
-      "spousephoto": "./photos/default.jpg"
+      "spousephoto": ""
     },
     {
       "id": "1769316686914",
@@ -215,11 +215,11 @@
       "lastname": "Budaden",
       "birthdate": "2026-01-15",
       "gender": "Male",
-      "photo": "./photos/default.jpg",
+      "photo": "",
       "remarks": "",
       "parent": "1769313667349",
       "spousename": "",
-      "spousephoto": "./photos/default.jpg"
+      "spousephoto": ""
     },
     {
       "id": "1769316714832",
@@ -228,11 +228,11 @@
       "lastname": "Budaden",
       "birthdate": "2026-01-16",
       "gender": "Female",
-      "photo": "./photos/default.jpg",
+      "photo": "",
       "remarks": "",
       "parent": "1769313691271",
       "spousename": "",
-      "spousephoto": "./photos/default.jpg"
+      "spousephoto": ""
     },
     {
       "id": "1769316788283",
@@ -241,11 +241,11 @@
       "lastname": "Wacnang",
       "birthdate": "2026-01-17",
       "gender": "Female",
-      "photo": "./photos/default.jpg",
+      "photo": "",
       "remarks": "",
       "parent": "1769316433374",
       "spousename": "",
-      "spousephoto": "./photos/default.jpg"
+      "spousephoto": ""
     },
     {
       "id": "1769316827094",
@@ -254,11 +254,11 @@
       "lastname": "Budaden",
       "birthdate": "2026-01-18",
       "gender": "Female",
-      "photo": "./photos/default.jpg",
+      "photo": "",
       "remarks": "",
       "parent": "1769316401428",
       "spousename": "",
-      "spousephoto": "./photos/default.jpg"
+      "spousephoto": ""
     }
   ]
 }

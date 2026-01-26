@@ -62,9 +62,15 @@
           <!-- Photo -->
           <div>
             <label class="block text-gray-700 font-medium">Photo</label>
-            <input @change="handlePhotoUpload" type="file" accept="image/*"
-                   class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" />
-            <img :src="form.photo || '/photos/default.jpg'" alt="preview" class="mt-2 w-16 h-16 rounded-full" />
+            <div class="flex items-center space-x-3">
+              <input @change="handlePhotoUpload" type="file" accept="image/*" ref="photoInput"
+                     class="hidden" />
+              <button type="button" @click="$refs.photoInput.click()"
+                      class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm">
+                Choose File
+              </button>
+              <img :src="form.photo || './photos/default.jpg'" alt="preview" class="w-16 h-16 rounded-full border-2 border-gray-200" />
+            </div>
           </div>
 
           <!-- Parent -->
@@ -105,9 +111,15 @@
             <!-- Spouse Photo -->
             <div>
               <label class="block text-gray-700 font-medium">Spouse Photo</label>
-              <input @change="handleSpousePhotoUpload" type="file" accept="image/*"
-                     class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" />
-              <img :src="form.spousephoto || '/photos/default.jpg'" alt="spouse preview" class="mt-2 w-16 h-16 rounded-full" />
+              <div class="flex items-center space-x-3">
+                <input @change="handleSpousePhotoUpload" type="file" accept="image/*" ref="spousePhotoInput"
+                       class="hidden" />
+                <button type="button" @click="$refs.spousePhotoInput.click()"
+                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm">
+                  Choose File
+                </button>
+                <img :src="form.spousephoto || './photos/default.jpg'" alt="spouse preview" class="w-16 h-16 rounded-full border-2 border-gray-200" />
+              </div>
             </div>
           </div>
         </div>
@@ -124,6 +136,67 @@
           </button>
         </div>
       </form>
+    </div>
+
+    <!-- Crop Modal -->
+    <div v-if="showCropModal" @click="cancelCrop" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60">
+      <div @click.stop class="bg-white rounded-lg p-6 w-[90vw] h-[90vh] mx-4 flex flex-col">
+        <h3 class="text-lg font-bold mb-4">Crop Photo</h3>
+        <div class="flex-1 flex items-center justify-center mb-4">
+          <div class="relative inline-block overflow-hidden">
+            <img :src="cropImage" @load="initCrop" ref="cropImg" 
+                 class="select-none max-w-full max-h-full" 
+                 style="max-width: 80vw; max-height: 70vh;" />
+            <!-- Dark overlay with crop hole -->
+            <div class="absolute inset-0 pointer-events-none" :style="{
+              background: `
+                linear-gradient(transparent, transparent),
+                radial-gradient(circle at ${cropBox.x + cropBox.size/2}px ${cropBox.y + cropBox.size/2}px, 
+                  transparent ${cropBox.size/2}px, 
+                  rgba(0,0,0,0.6) ${cropBox.size/2 + 1}px)
+              `
+            }"></div>
+            <!-- Crop box borders only -->
+            <div class="absolute border-2 border-white cursor-move" 
+                 @mousedown="startDrag"
+                 @wheel="handleResize"
+                 :style="cropBoxStyle">
+            </div>
+          </div>
+        </div>
+        <!-- Size controls -->
+        <div class="flex items-center justify-center space-x-2 mb-4">
+          <button @click="resizeCrop(-10)" class="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded text-sm">-</button>
+          <span class="text-sm">{{ Math.round((cropBox.size / Math.min(imageWidth, imageHeight)) * 100) }}%</span>
+          <button @click="resizeCrop(10)" class="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded text-sm">+</button>
+        </div>
+        <canvas ref="cropCanvas" width="150" height="150" class="hidden"></canvas>
+        <div class="flex justify-end space-x-3">
+          <button @click="cancelCrop" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
+            Cancel
+          </button>
+          <button @click="cropPhoto" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+            Save Photo
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Save Prompt Modal -->
+    <div v-if="showSavePrompt" @click="showSavePrompt = false" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-70">
+      <div @click.stop class="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
+        <h3 class="text-lg font-bold mb-4">Save Cropped Image</h3>
+        <p class="text-sm text-gray-600 mb-4">The image will be downloaded to your Downloads folder. Please move it to:</p>
+        <code class="bg-gray-100 p-2 rounded block text-sm mb-4">public/photos/</code>
+        <div class="flex justify-end space-x-3">
+          <button @click="showSavePrompt = false" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
+            Cancel
+          </button>
+          <button @click="saveImageToPhotos" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+            Download
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -144,19 +217,37 @@ export default {
         lastname: "",
         birthdate: "",
         gender: "",
-        photo: "/photos/default.jpg",
+        photo: "",
         remarks: "",
         parent: null,
         spousename: "",
-        spousephoto: "/photos/default.jpg"
+        spousephoto: ""
       },
-      showSpouse: false
+      showSpouse: false,
+      showCropModal: false,
+      cropImage: null,
+      cropType: 'photo', // 'photo' or 'spouse'
+      cropBox: { x: 0, y: 0, size: 100 },
+      isDragging: false,
+      dragStart: { x: 0, y: 0 },
+      imageWidth: 0,
+      imageHeight: 0,
+      croppedImage: null,
+      showSavePrompt: false
     };
   },
   computed: {
     availableParents() {
       return this.members.filter(m => m.id !== this.form.id);
-    }
+    },
+    cropBoxStyle() {
+      return {
+        left: this.cropBox.x + 'px',
+        top: this.cropBox.y + 'px',
+        width: this.cropBox.size + 'px',
+        height: this.cropBox.size + 'px'
+      };
+    },
   },
   methods: {
     handlePhotoUpload(event) {
@@ -164,7 +255,9 @@ export default {
       if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
-          this.form.photo = e.target.result;
+          this.cropImage = e.target.result;
+          this.cropType = 'photo';
+          this.showCropModal = true;
         };
         reader.readAsDataURL(file);
       }
@@ -174,10 +267,160 @@ export default {
       if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
-          this.form.spousephoto = e.target.result;
+          this.cropImage = e.target.result;
+          this.cropType = 'spouse';
+          this.showCropModal = true;
         };
         reader.readAsDataURL(file);
       }
+    },
+    cropPhoto() {
+      const img = this.$refs.cropImg;
+      const canvas = this.$refs.cropCanvas;
+      const ctx = canvas.getContext('2d');
+      
+      // Get displayed image dimensions
+      const imgRect = img.getBoundingClientRect();
+      
+      // Calculate scale from displayed to natural image
+      const scaleX = img.naturalWidth / imgRect.width;
+      const scaleY = img.naturalHeight / imgRect.height;
+      
+      // Calculate crop area in natural image coordinates
+      const cropX = this.cropBox.x * scaleX;
+      const cropY = this.cropBox.y * scaleY;
+      const cropSize = this.cropBox.size * scaleX;
+      
+      // Draw the cropped area to canvas
+      ctx.drawImage(img, cropX, cropY, cropSize, cropSize, 0, 0, 150, 150);
+      
+      // Store cropped image data and show save prompt
+      this.croppedImage = {
+        dataUrl: canvas.toDataURL('image/jpeg', 0.8),
+        filename: `photo_${Date.now()}.jpg`
+      };
+      
+      this.showSavePrompt = true;
+    },
+    saveImageToPhotos() {
+      if (!this.croppedImage) return;
+      
+      // Convert data URL to blob
+      const byteString = atob(this.croppedImage.dataUrl.split(',')[1]);
+      const mimeString = this.croppedImage.dataUrl.split(',')[0].split(':')[1].split(';')[0];
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+      const blob = new Blob([ab], { type: mimeString });
+      
+      // Create download link
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = this.croppedImage.filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+      
+      // Update form with photo path
+      const photoPath = `./photos/${this.croppedImage.filename}`;
+      if (this.cropType === 'photo') {
+        this.form.photo = photoPath;
+      } else {
+        this.form.spousephoto = photoPath;
+      }
+      
+      this.showSavePrompt = false;
+      this.showCropModal = false;
+    },
+    cancelCrop() {
+      this.showCropModal = false;
+      this.cropImage = null;
+      this.croppedImage = null;
+      this.showSavePrompt = false;
+      this.stopDrag();
+    },
+    initCrop() {
+      this.$nextTick(() => {
+        const img = this.$refs.cropImg;
+        if (img) {
+          const imgRect = img.getBoundingClientRect();
+          this.imageWidth = imgRect.width;
+          this.imageHeight = imgRect.height;
+          // Square crop size is 100% of the shorter dimension
+          const size = Math.min(imgRect.width, imgRect.height);
+          this.cropBox = {
+            x: (imgRect.width - size) / 2,
+            y: (imgRect.height - size) / 2,
+            size: size
+          };
+        }
+      });
+    },
+    startDrag(event) {
+      this.isDragging = true;
+      this.dragStart = {
+        x: event.clientX - this.cropBox.x,
+        y: event.clientY - this.cropBox.y
+      };
+      document.addEventListener('mousemove', this.drag);
+      document.addEventListener('mouseup', this.stopDrag);
+      event.preventDefault();
+    },
+    drag(event) {
+      if (this.isDragging) {
+        const img = this.$refs.cropImg;
+        const imgRect = img.getBoundingClientRect();
+        
+        // Calculate new position
+        let newX = event.clientX - this.dragStart.x;
+        let newY = event.clientY - this.dragStart.y;
+        
+        // Constrain to image bounds
+        newX = Math.max(0, Math.min(newX, imgRect.width - this.cropBox.size));
+        newY = Math.max(0, Math.min(newY, imgRect.height - this.cropBox.size));
+        
+        this.cropBox.x = newX;
+        this.cropBox.y = newY;
+      }
+    },
+    stopDrag() {
+      this.isDragging = false;
+      document.removeEventListener('mousemove', this.drag);
+      document.removeEventListener('mouseup', this.stopDrag);
+    },
+    handleResize(event) {
+      event.preventDefault();
+      const delta = event.deltaY > 0 ? -5 : 5;
+      this.resizeCrop(delta);
+    },
+    resizeCrop(delta) {
+      let newSize = this.cropBox.size + delta;
+      
+      // Minimum size constraint
+      newSize = Math.max(30, newSize);
+      
+      // Maximum size constraints based on position and image bounds
+      const maxSizeFromRight = this.imageWidth - this.cropBox.x;
+      const maxSizeFromBottom = this.imageHeight - this.cropBox.y;
+      newSize = Math.min(newSize, maxSizeFromRight, maxSizeFromBottom);
+      
+      // Adjust position if crop box would go out of bounds
+      let newX = this.cropBox.x;
+      let newY = this.cropBox.y;
+      
+      if (newX + newSize > this.imageWidth) {
+        newX = this.imageWidth - newSize;
+      }
+      if (newY + newSize > this.imageHeight) {
+        newY = this.imageHeight - newSize;
+      }
+      
+      this.cropBox.size = newSize;
+      this.cropBox.x = Math.max(0, newX);
+      this.cropBox.y = Math.max(0, newY);
     },
     saveMember() {
       this.$emit("save", this.form);
