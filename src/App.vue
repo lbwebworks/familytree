@@ -48,7 +48,7 @@ export default {
     deleteMember(id) { this.members = this.members.filter(m => m.id !== id); }
   },
   created() {
-    fetch('/data.json')
+    fetch('./data.json')
       .then(res => res.json())
       .then(data => {
         this.members = data.members;

@@ -43,7 +43,7 @@ export default {
       <div v-else class="w-6"></div>
       
       <!-- Member photo -->
-      <img :src="member.photo || '/photos/default.png'" alt="photo" :class="member.gender === 'Female' ? 'border-pink-200' : 'border-blue-200'" class="w-10 h-10 rounded-full border-2" />
+      <img :src="member.photo || './photos/default.jpg'" alt="photo" :class="member.gender === 'Female' ? 'border-pink-200' : 'border-blue-200'" class="w-10 h-10 rounded-full border-2" />
 
       <!-- Member name with tooltip -->
       <div :class="member.gender === 'Female' ? 'bg-pink-50 border-pink-200' : 'bg-blue-50 border-blue-200'" class="px-3 py-2 rounded-lg border">
@@ -60,7 +60,7 @@ export default {
       <!-- Spouse (if present) -->
       <template v-if="member.spousename">
         <span class="text-gray-400 font-bold">♥</span>
-        <img :src="member.spousephoto || '/photos/default.png'" alt="spouse photo" :class="member.gender === 'Female' ? 'border-blue-200' : 'border-pink-200'" class="w-10 h-10 rounded-full border-2" />
+        <img :src="member.spousephoto || './photos/default.jpg'" alt="spouse photo" :class="member.gender === 'Female' ? 'border-blue-200' : 'border-pink-200'" class="w-10 h-10 rounded-full border-2" />
         <div :class="member.gender === 'Female' ? 'bg-blue-50 border-blue-200' : 'bg-pink-50 border-pink-200'" class="px-3 py-2 rounded-lg border">
           <span :class="member.gender === 'Female' ? 'text-blue-900' : 'text-pink-900'" class="font-medium">{{ member.spousename }}</span>
         </div>
