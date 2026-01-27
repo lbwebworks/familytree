@@ -69,7 +69,10 @@
                 class="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed">
           Previous
         </button>
-        <span class="px-3 py-1">Page {{ currentPage }} of {{ totalPages }}</span>
+        <span class="px-3 py-1">Page </span>
+        <input v-model.number="currentPage" type="number" min="1" :max="totalPages" 
+               class="w-16 px-2 py-1 border rounded text-center" />
+        <span class="px-3 py-1"> of {{ totalPages }}</span>
         <button @click="currentPage++" :disabled="currentPage === totalPages" 
                 class="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed">
           Next
@@ -92,7 +95,7 @@ export default {
       selectedRoot: this.root || "",
       searchQuery: "",
       currentPage: 1,
-      itemsPerPage: 20
+      itemsPerPage: 10
     };
   },
   watch: {
@@ -111,9 +114,14 @@ export default {
       if (!this.searchQuery) return this.sortedMembers;
       const query = this.searchQuery.toLowerCase();
       return this.sortedMembers.filter(m => 
-        m.firstname.toLowerCase().includes(query) ||
-        m.lastname.toLowerCase().includes(query) ||
-        m.middlename.toLowerCase().includes(query)
+        (m.firstname || '').toLowerCase().includes(query) ||
+        (m.lastname || '').toLowerCase().includes(query) ||
+        (m.middlename || '').toLowerCase().includes(query) ||
+        (m.nickname || '').toLowerCase().includes(query) ||
+        (m.spousefirstname || '').toLowerCase().includes(query) ||
+        (m.spouselastname || '').toLowerCase().includes(query) ||
+        (m.spousemiddlename || '').toLowerCase().includes(query) ||
+        (m.spousenickname || '').toLowerCase().includes(query)
       );
     },
     sortedMembers() {
