@@ -39,6 +39,13 @@
                    class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" required />
           </div>
 
+          <!-- Nickname -->
+          <div>
+            <label class="block text-gray-700 font-medium">Nickname</label>
+            <input v-model="form.nickname" type="text"
+                   class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" />
+          </div>
+
           <!-- Birthdate -->
           <div>
             <label class="block text-gray-700 font-medium">Birthdate</label>
@@ -105,10 +112,31 @@
           </button>
           
           <div v-if="showSpouse" class="grid grid-cols-2 gap-6 mt-4">
-            <!-- Spouse Name -->
+            <!-- Spouse First Name -->
             <div>
-              <label class="block text-gray-700 font-medium">Spouse Name</label>
-              <input v-model="form.spousename" type="text"
+              <label class="block text-gray-700 font-medium">Spouse First Name</label>
+              <input v-model="form.spousefirstname" type="text"
+                     class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <!-- Spouse Middle Name -->
+            <div>
+              <label class="block text-gray-700 font-medium">Spouse Middle Name</label>
+              <input v-model="form.spousemiddlename" type="text"
+                     class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <!-- Spouse Last Name -->
+            <div>
+              <label class="block text-gray-700 font-medium">Spouse Last Name</label>
+              <input v-model="form.spouselastname" type="text"
+                     class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <!-- Spouse Nickname -->
+            <div>
+              <label class="block text-gray-700 font-medium">Spouse Nickname</label>
+              <input v-model="form.spousenickname" type="text"
                      class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" />
             </div>
 
@@ -218,17 +246,27 @@ export default {
   },
   data() {
     return {
-      form: this.member ? { ...this.member } : {
+      form: this.member ? { 
+        ...this.member,
+        // Handle backward compatibility for old spousename field
+        spousefirstname: this.member.spousefirstname || (this.member.spousename ? this.member.spousename.split(' ')[0] || '' : ''),
+        spousemiddlename: this.member.spousemiddlename || (this.member.spousename ? this.member.spousename.split(' ')[1] || '' : ''),
+        spouselastname: this.member.spouselastname || (this.member.spousename ? this.member.spousename.split(' ').slice(2).join(' ') || '' : '')
+      } : {
         id: Date.now().toString(), // simple unique ID
         firstname: "",
         middlename: "",
         lastname: "",
+        nickname: "",
         birthdate: "",
         gender: "",
         photo: "",
         remarks: "",
         parent: null,
-        spousename: "",
+        spousefirstname: "",
+        spousemiddlename: "",
+        spouselastname: "",
+        spousenickname: "",
         spousephoto: ""
       },
       showSpouse: false,
