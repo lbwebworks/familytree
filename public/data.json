@@ -19,11 +19,11 @@
       "firstname": "Lee",
       "middlename": "Roque",
       "birthdate": "1990-12-14",
-      "photo": "./photos/photo_1769431956875.jpg",
+      "photo": "./photos/photo_1769506756655.jpg",
       "remarks": "",
       "parent": "1",
       "spousename": "Krishan Joy Lacza Budaden",
-      "spousephoto": "",
+      "spousephoto": "./photos/photo_1769506784709.jpg",
       "gender": "Male"
     },
     {
@@ -32,7 +32,7 @@
       "middlename": "",
       "lastname": "Child",
       "birthdate": "2026-01-16",
-      "photo": "./photos/photo_1769431908410.jpg",
+      "photo": "./photos/photo_1769506614433.jpg",
       "remarks": "",
       "parent": null,
       "spousename": "",

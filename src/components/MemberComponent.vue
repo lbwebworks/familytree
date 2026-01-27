@@ -69,6 +69,10 @@
                       class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm">
                 Choose File
               </button>
+              <button type="button" @click="removePhoto" v-if="form.photo && form.photo !== './photos/default.jpg'"
+                      class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded text-sm">
+                Remove
+              </button>
               <img :src="form.photo || './photos/default.jpg'" alt="preview" class="w-16 h-16 rounded-full border-2 border-gray-200" />
             </div>
           </div>
@@ -117,6 +121,10 @@
                 <button type="button" @click="$refs.spousePhotoInput.click()"
                         class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm">
                   Choose File
+                </button>
+                <button type="button" @click="removeSpousePhoto" v-if="form.spousephoto && form.spousephoto !== './photos/default.jpg'"
+                        class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded text-sm">
+                  Remove
                 </button>
                 <img :src="form.spousephoto || './photos/default.jpg'" alt="spouse preview" class="w-16 h-16 rounded-full border-2 border-gray-200" />
               </div>
@@ -170,7 +178,7 @@
           <span class="text-sm">{{ Math.round((cropBox.size / Math.min(imageWidth, imageHeight)) * 100) }}%</span>
           <button @click="resizeCrop(10)" class="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded text-sm">+</button>
         </div>
-        <canvas ref="cropCanvas" width="150" height="150" class="hidden"></canvas>
+        <canvas ref="cropCanvas" class="hidden"></canvas>
         <div class="flex justify-end space-x-3">
           <button @click="cancelCrop" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
             Cancel
@@ -291,12 +299,16 @@ export default {
       const cropY = this.cropBox.y * scaleY;
       const cropSize = this.cropBox.size * scaleX;
       
-      // Draw the cropped area to canvas
-      ctx.drawImage(img, cropX, cropY, cropSize, cropSize, 0, 0, 150, 150);
+      // Set canvas to actual crop size to maintain quality
+      canvas.width = cropSize;
+      canvas.height = cropSize;
       
-      // Store cropped image data and show save prompt
+      // Draw the cropped area to canvas at full resolution
+      ctx.drawImage(img, cropX, cropY, cropSize, cropSize, 0, 0, cropSize, cropSize);
+      
+      // Store cropped image data and show save prompt (high quality JPEG)
       this.croppedImage = {
-        dataUrl: canvas.toDataURL('image/jpeg', 0.8),
+        dataUrl: canvas.toDataURL('image/jpeg', 0.95),
         filename: `photo_${Date.now()}.jpg`
       };
       
@@ -421,6 +433,12 @@ export default {
       this.cropBox.size = newSize;
       this.cropBox.x = Math.max(0, newX);
       this.cropBox.y = Math.max(0, newY);
+    },
+    removePhoto() {
+      this.form.photo = "";
+    },
+    removeSpousePhoto() {
+      this.form.spousephoto = "";
     },
     saveMember() {
       this.$emit("save", this.form);
