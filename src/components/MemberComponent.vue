@@ -2,7 +2,7 @@
   <!-- Modal Overlay -->
   <div @click="$emit('cancel')" class="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
     <!-- Modal Content -->
-    <div @click.stop class="bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl relative">
+    <div @click.stop class="bg-white dark:bg-gray-800 dark:text-gray-100 shadow-lg rounded-lg p-6 w-full max-w-4xl relative">
       <!-- Close Button -->
       <button
         @click="$emit('cancel')"
@@ -22,35 +22,35 @@
           <div>
             <label class="block text-gray-700 font-medium">First Name</label>
             <input v-model="form.firstname" type="text"
-                   class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" required />
+                   class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" required />
           </div>
 
           <!-- Middle Name -->
           <div>
             <label class="block text-gray-700 font-medium">Middle Name</label>
             <input v-model="form.middlename" type="text"
-                   class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" />
+                   class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" />
           </div>
 
           <!-- Last Name -->
           <div>
             <label class="block text-gray-700 font-medium">Last Name</label>
             <input v-model="form.lastname" type="text"
-                   class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" required />
+                   class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" required />
           </div>
 
           <!-- Nickname -->
           <div>
             <label class="block text-gray-700 font-medium">Nickname</label>
             <input v-model="form.nickname" type="text"
-                   class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" />
+                   class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" />
           </div>
 
           <!-- Birthdate -->
           <div>
             <label class="block text-gray-700 font-medium">Birthdate</label>
             <input v-model="form.birthdate" type="date"
-                   class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" required />
+                   class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" required />
           </div>
         </div>
 
@@ -59,7 +59,7 @@
           <!-- Gender -->
           <div>
             <label class="block text-gray-700 font-medium">Gender</label>
-            <select v-model="form.gender" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
+            <select v-model="form.gender" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" required>
               <option value="">-- Select Gender --</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -87,7 +87,7 @@
           <!-- Parent -->
           <div>
             <label class="block text-gray-700 font-medium">Parent</label>
-            <select v-model="form.parent" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500">
+            <select v-model="form.parent" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100">
               <option value="">-- No Parent --</option>
               <option v-for="m in availableParents" :key="m.id" :value="m.id">
                 {{ m.lastname }}, {{ m.firstname }} {{ m.middlename }}
@@ -99,14 +99,14 @@
           <div>
             <label class="block text-gray-700 font-medium">Remarks</label>
             <textarea v-model="form.remarks"
-                      class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"></textarea>
+                      class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"></textarea>
           </div>
         </div>
 
         <!-- Spouse Section (Expandable) -->
-        <div class="col-span-2 border-t pt-4">
+        <div class="col-span-2 border-t dark:border-gray-600 pt-4">
           <button type="button" @click="showSpouse = !showSpouse" 
-                  class="flex items-center text-blue-600 hover:text-blue-800 font-medium">
+                  class="flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium">
             <span :class="showSpouse ? 'rotate-90' : ''" class="transform transition-transform mr-2">▶</span>
             Spouse Information (Optional)
           </button>
@@ -116,28 +116,28 @@
             <div>
               <label class="block text-gray-700 font-medium">Spouse First Name</label>
               <input v-model="form.spousefirstname" type="text"
-                     class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" />
+                     class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" />
             </div>
 
             <!-- Spouse Middle Name -->
             <div>
               <label class="block text-gray-700 font-medium">Spouse Middle Name</label>
               <input v-model="form.spousemiddlename" type="text"
-                     class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" />
+                     class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" />
             </div>
 
             <!-- Spouse Last Name -->
             <div>
               <label class="block text-gray-700 font-medium">Spouse Last Name</label>
               <input v-model="form.spouselastname" type="text"
-                     class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" />
+                     class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" />
             </div>
 
             <!-- Spouse Nickname -->
             <div>
               <label class="block text-gray-700 font-medium">Spouse Nickname</label>
               <input v-model="form.spousenickname" type="text"
-                     class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" />
+                     class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" />
             </div>
 
             <!-- Spouse Photo -->
@@ -176,7 +176,7 @@
 
     <!-- Crop Modal -->
     <div v-if="showCropModal" @click="cancelCrop" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60">
-      <div @click.stop class="bg-white rounded-lg p-6 w-[90vw] h-[90vh] mx-4 flex flex-col">
+      <div @click.stop class="bg-white dark:bg-gray-800 rounded-lg p-6 w-[90vw] h-[90vh] mx-4 flex flex-col">
         <h3 class="text-lg font-bold mb-4">Crop Photo</h3>
         <div class="flex-1 flex items-center justify-center mb-4">
           <div class="relative inline-block overflow-hidden">
@@ -220,7 +220,7 @@
 
     <!-- Save Prompt Modal -->
     <div v-if="showSavePrompt" @click="showSavePrompt = false" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-70">
-      <div @click.stop class="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
+      <div @click.stop class="bg-white dark:bg-gray-800 dark:text-gray-100 rounded-lg p-6 max-w-sm w-full mx-4">
         <h3 class="text-lg font-bold mb-4">Save Cropped Image</h3>
         <p class="text-sm text-gray-600 mb-4">The image will be downloaded to your Downloads folder. Please move it to:</p>
         <code class="bg-gray-100 p-2 rounded block text-sm mb-4">public/photos/</code>

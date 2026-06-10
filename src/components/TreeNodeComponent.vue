@@ -49,7 +49,7 @@ export default {
       
       <!-- Expand/Collapse button -->
       <button v-if="children.length" @click="toggleExpand" 
-              class="w-6 h-6 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-xs font-bold">
+              class="w-6 h-6 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-full flex items-center justify-center text-xs font-bold">
         {{ expandedNodes.has(member.id) ? '-' : '+' }}
       </button>
       <div v-else class="w-6"></div>
@@ -58,8 +58,8 @@ export default {
       <img :src="member.photo || './photos/default.jpg'" alt="photo" :class="member.gender === 'Female' ? 'border-pink-200' : 'border-blue-200'" class="w-10 h-10 rounded-full border-2" />
 
       <!-- Member name with tooltip -->
-      <div :class="member.gender === 'Female' ? 'bg-pink-50 border-pink-200' : 'bg-blue-50 border-blue-200'" class="px-3 py-2 rounded-lg border">
-        <span :class="member.gender === 'Female' ? 'text-pink-900' : 'text-blue-900'" class="relative group font-medium">
+      <div :class="member.gender === 'Female' ? 'bg-pink-50 dark:bg-pink-900/30 border-pink-200 dark:border-pink-800' : 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800'" class="px-3 py-2 rounded-lg border">
+        <span :class="member.gender === 'Female' ? 'text-pink-900 dark:text-pink-300' : 'text-blue-900 dark:text-blue-300'" class="relative group font-medium">
           {{ displayName }}
           <!-- Tooltip -->
           <span v-if="member.remarks"
@@ -72,9 +72,9 @@ export default {
       <!-- Spouse (if present) -->
       <template v-if="spouseName">
         <span class="text-gray-400 font-bold">♥</span>
-        <img :src="member.spousephoto || './photos/default.jpg'" alt="spouse photo" :class="member.gender === 'Female' ? 'border-blue-200' : 'border-pink-200'" class="w-10 h-10 rounded-full border-2" />
-        <div :class="member.gender === 'Female' ? 'bg-blue-50 border-blue-200' : 'bg-pink-50 border-pink-200'" class="px-3 py-2 rounded-lg border">
-          <span :class="member.gender === 'Female' ? 'text-blue-900' : 'text-pink-900'" class="font-medium">{{ spouseDisplayName }}</span>
+        <img :src="member.spousephoto || './photos/default.jpg'" alt="spouse photo" :class="member.gender === 'Female' ? 'border-blue-200 dark:border-blue-800' : 'border-pink-200 dark:border-pink-800'" class="w-10 h-10 rounded-full border-2" />
+        <div :class="member.gender === 'Female' ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800' : 'bg-pink-50 dark:bg-pink-900/30 border-pink-200 dark:border-pink-800'" class="px-3 py-2 rounded-lg border">
+          <span :class="member.gender === 'Female' ? 'text-blue-900 dark:text-blue-300' : 'text-pink-900 dark:text-pink-300'" class="font-medium">{{ spouseDisplayName }}</span>
         </div>
       </template>
     </div>

@@ -34,10 +34,10 @@ export default {
 </script>
 
 <template>
-  <div class="bg-gray-50 p-6 rounded-lg">
+  <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
     <!-- Empty state -->
     <div v-if="!rootMember" class="text-center py-8">
-      <p class="text-gray-600 italic text-lg">
+      <p class="text-gray-600 dark:text-gray-400 italic text-lg">
         No family tree root selected. Go to Members tab to select a root member.
       </p>
     </div>
@@ -45,7 +45,7 @@ export default {
     <!-- Tree rendering -->
     <div v-else>
       <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-semibold text-gray-700">Family Tree</h2>
+        <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-300">Family Tree</h2>
         <div class="space-x-2">
           <button @click="expandAll" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
             Expand All

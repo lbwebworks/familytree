@@ -5,7 +5,7 @@
       <div class="flex items-center gap-4">
         <div class="flex items-center">
           <label class="font-semibold mr-2">Root:</label>
-          <select v-model="selectedRoot" @change="$emit('set-root', selectedRoot)" class="border rounded px-2 py-1">
+          <select v-model="selectedRoot" @change="$emit('set-root', selectedRoot)" class="border rounded px-2 py-1 bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100">
             <option disabled value="">-- Select Root --</option>
             <option v-for="m in rootCandidates" :key="m.id" :value="m.id">
               {{ m.lastname }}, {{ m.firstname }}
@@ -16,7 +16,7 @@
         <div class="flex items-center">
           <label class="font-semibold mr-2">Search:</label>
           <input v-model="searchQuery" type="text" placeholder="Search members..." 
-                 class="border rounded px-2 py-1 w-48" />
+                 class="border rounded px-2 py-1 w-48 bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400" />
         </div>
       </div>
       
@@ -31,27 +31,27 @@
     </div>
 
     <!-- Members Table -->
-    <table class="table-auto w-full border-collapse border border-gray-300">
+    <table class="table-auto w-full border-collapse border border-gray-300 dark:border-gray-600">
       <thead>
-        <tr class="bg-gray-200">
-          <th class="border px-2 py-1">Photo</th>
-          <th class="border px-2 py-1">Full Name</th>
-          <th class="border px-2 py-1">Birthdate</th>
-          <th class="border px-2 py-1">Controls</th>
+        <tr class="bg-gray-200 dark:bg-gray-700 dark:text-gray-100">
+          <th class="border px-2 py-1 dark:border-gray-600">Photo</th>
+          <th class="border px-2 py-1 dark:border-gray-600">Full Name</th>
+          <th class="border px-2 py-1 dark:border-gray-600">Birthdate</th>
+          <th class="border px-2 py-1 dark:border-gray-600">Controls</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="m in paginatedMembers" :key="m.id">
-          <td class="border px-2 py-1 text-center">
+        <tr v-for="m in paginatedMembers" :key="m.id" class="dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700">
+          <td class="border px-2 py-1 text-center dark:border-gray-600">
             <img :src="m.photo || './photos/default.jpg'" @error="$event.target.src = './photos/default.jpg'" alt="photo" class="w-10 h-10 rounded-full mx-auto" />
           </td>
-          <td class="border px-2 py-1">
+          <td class="border px-2 py-1 dark:border-gray-600">
             {{ m.lastname }}, {{ m.firstname }} {{ m.middlename }}
           </td>
-          <td class="border px-2 py-1">
+          <td class="border px-2 py-1 dark:border-gray-600">
             {{ m.birthdate }}
           </td>
-          <td class="border px-2 py-1 text-center space-x-2">
+          <td class="border px-2 py-1 text-center space-x-2 dark:border-gray-600">
             <button @click="$emit('edit', m)" class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</button>
             <button @click="$emit('delete', m.id)" class="bg-red-600 text-white px-2 py-1 rounded">Delete</button>
           </td>
@@ -61,20 +61,20 @@
 
     <!-- Pagination -->
     <div class="mt-4 flex justify-between items-center">
-      <div class="text-sm text-gray-600">
+      <div class="text-sm text-gray-600 dark:text-gray-400">
         Showing {{ startIndex + 1 }}-{{ Math.min(endIndex, filteredMembers.length) }} of {{ filteredMembers.length }} members
       </div>
       <div class="flex space-x-2">
         <button @click="currentPage--" :disabled="currentPage === 1" 
-                class="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed">
+                class="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800">
           Previous
         </button>
         <span class="px-3 py-1">Page </span>
         <input v-model.number="currentPage" type="number" min="1" :max="totalPages" 
-               class="w-16 px-2 py-1 border rounded text-center" />
+               class="w-16 px-2 py-1 border rounded text-center dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100" />
         <span class="px-3 py-1"> of {{ totalPages }}</span>
         <button @click="currentPage++" :disabled="currentPage === totalPages" 
-                class="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed">
+                class="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-600 dark:text-gray-300 dark:bg-gray-800">
           Next
         </button>
       </div>

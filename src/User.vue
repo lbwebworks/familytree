@@ -1,8 +1,13 @@
 <script>
 import TreeView from './components/TreeViewComponent.vue';
+import { useTheme } from './composables/useTheme.js';
 
 export default {
   components: { TreeView },
+  setup() {
+    const { isDark, toggleTheme } = useTheme();
+    return { isDark, toggleTheme };
+  },
   data() {
     return {
       members: [],
@@ -35,14 +40,19 @@ export default {
 </script>
 
 <template>
-  <div class="p-4">
-    <h1 class="text-3xl font-bold mb-6 text-center">Family Tree</h1>
-    
+  <div class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-4">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">Family Tree</h1>
+      <button @click="toggleTheme" class="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-xl">
+        {{ isDark ? '☀️' : '🌙' }}
+      </button>
+    </div>
+
     <!-- Root Selector -->
     <div class="mb-6 flex justify-center">
       <div class="flex items-center">
         <label class="font-semibold mr-2">Root:</label>
-        <select v-model="selectedRoot" @change="setRoot" class="border rounded px-3 py-2">
+        <select v-model="selectedRoot" @change="setRoot" class="border rounded px-3 py-2 bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100">
           <option disabled value="">-- Select Root --</option>
           <option v-for="m in rootCandidates" :key="m.id" :value="m.id">
             {{ m.lastname }}, {{ m.firstname }}
@@ -50,7 +60,7 @@ export default {
         </select>
       </div>
     </div>
-    
+
     <TreeView :members="members" :root="root" />
   </div>
 </template>
