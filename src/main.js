@@ -4,7 +4,7 @@ import Admin from './Admin.vue'
 import User from './User.vue'
 import TreeNode from './components/TreeNodeComponent.vue'
 
-// Use User for production (GitHub Pages), Admin for development
+// Admin always in dev, User in production
 const component = import.meta.env.PROD ? User : Admin;
 
 const app = createApp(component)

@@ -2,6 +2,8 @@
 import TreeView from './components/TreeViewComponent.vue';
 import { useTheme } from './composables/useTheme.js';
 
+const FAM_KEYS = ['budaden', 'dawey', 'lacza'];
+
 export default {
   components: { TreeView },
   setup() {
@@ -26,7 +28,9 @@ export default {
     }
   },
   created() {
-    fetch('./data.json')
+    const fam = new URLSearchParams(window.location.search).get('fam');
+    const file = FAM_KEYS.includes(fam?.toLowerCase()) ? './data.json' : './dummy.json';
+    fetch(file)
       .then(res => res.json())
       .then(data => {
         this.members = data.members;
@@ -34,7 +38,7 @@ export default {
         this.root = rootMember ? rootMember.id : null;
         this.selectedRoot = this.root || "";
       })
-      .catch(err => console.error("Failed to load data.json", err));
+      .catch(err => console.error("Failed to load data", err));
   }
 };
 </script>

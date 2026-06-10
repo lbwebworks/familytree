@@ -5,6 +5,8 @@ import Members from './components/MembersComponent.vue';
 import Member from './components/MemberComponent.vue';
 import { useTheme } from './composables/useTheme.js';
 
+const FAM_KEYS = ['budaden', 'dawey', 'lacza'];
+
 export default {
   components: { TreeView, TreeNode, Members, Member },
   setup() {
@@ -53,11 +55,12 @@ export default {
     deleteMember(id) { this.members = this.members.filter(m => m.id !== id); }
   },
   created() {
-    fetch('./data.json')
+    const fam = new URLSearchParams(window.location.search).get('fam');
+    const file = FAM_KEYS.includes(fam?.toLowerCase()) ? './data.json' : './dummy.json';
+    fetch(file)
       .then(res => res.json())
       .then(data => {
         this.members = data.members;
-        // Find member with parent "root" and set as root
         const rootMember = data.members.find(m => m.parent === "root");
         this.root = rootMember ? rootMember.id : null;
       })
