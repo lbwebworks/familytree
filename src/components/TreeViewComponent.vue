@@ -1,10 +1,10 @@
 <script>
-import TreeNode from './TreeNodeComponent.vue';
+import TreeList from './TreeListComponent.vue';
 import TreeChart from './TreeChartComponent.vue';
 
 export default {
   name: "TreeViewComponent",
-  components: { TreeNode, TreeChart },
+  components: { TreeList, TreeChart },
   props: {
     members: { type: Array, required: true },
     root: { type: String, default: null }
@@ -29,6 +29,11 @@ export default {
     },
     collapseAll() {
       this.expandedNodes = new Set();
+    },
+    toggleNode(id) {
+      const next = new Set(this.expandedNodes);
+      next.has(id) ? next.delete(id) : next.add(id);
+      this.expandedNodes = next;
     }
   }
 };
@@ -36,7 +41,6 @@ export default {
 
 <template>
   <div class="flex flex-col items-center">
-    <!-- Empty state -->
     <div v-if="!rootMember" class="text-center py-8">
       <p class="text-gray-600 dark:text-gray-400 italic text-lg">
         No root selected. Go to Members tab to set a root member.
@@ -46,7 +50,6 @@ export default {
     <div v-else :class="viewMode === 'list' ? 'inline-block' : 'w-full'">
       <!-- Controls -->
       <div class="flex justify-between items-center mb-4 gap-8">
-        <!-- View toggle -->
         <div class="flex items-center gap-3">
           <label class="flex items-center gap-1 cursor-pointer">
             <input type="radio" v-model="viewMode" value="tree" class="accent-blue-500" />
@@ -57,7 +60,6 @@ export default {
             <span class="text-sm font-medium">List</span>
           </label>
         </div>
-        <!-- Expand/Collapse (List only) -->
         <div v-if="viewMode === 'list'" class="space-x-2">
           <button @click="expandAll" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">Expand All</button>
           <button @click="collapseAll" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">Collapse All</button>
@@ -65,12 +67,20 @@ export default {
       </div>
 
       <!-- List view -->
-      <ul v-if="viewMode === 'list'" class="list-none">
-        <tree-node :member="rootMember" :members="connectedMembers" :expanded-nodes="expandedNodes"></tree-node>
-      </ul>
+      <TreeList
+        v-if="viewMode === 'list'"
+        :members="connectedMembers"
+        :root="rootMember"
+        :expanded-nodes="expandedNodes"
+        @toggle="toggleNode"
+      />
 
-      <!-- Tree view (top-down) -->
-      <TreeChart v-else :members="connectedMembers" :root="rootMember" />
+      <!-- Tree view -->
+      <TreeChart
+        v-else
+        :members="connectedMembers"
+        :root="rootMember"
+      />
     </div>
   </div>
 </template>
