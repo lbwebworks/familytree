@@ -1,9 +1,10 @@
 <script>
 import TreeNode from './TreeNodeComponent.vue';
+import TreeChart from './TreeChartComponent.vue';
 
 export default {
   name: "TreeViewComponent",
-  components: { TreeNode },
+  components: { TreeNode, TreeChart },
   props: {
     members: { type: Array, required: true },
     root: { type: String, default: null }
@@ -13,13 +14,13 @@ export default {
       return this.members.find(m => m.parent === "root") || this.members.find(m => m.id === this.root) || null;
     },
     connectedMembers() {
-      // Only include members that are connected to the tree (not orphans)
       return this.members.filter(m => m.parent === "root" || this.members.some(parent => parent.id === m.parent));
     }
   },
   data() {
     return {
-      expandedNodes: new Set()
+      expandedNodes: new Set(),
+      viewMode: 'list'
     };
   },
   methods: {
@@ -38,26 +39,38 @@ export default {
     <!-- Empty state -->
     <div v-if="!rootMember" class="text-center py-8">
       <p class="text-gray-600 dark:text-gray-400 italic text-lg">
-        No family tree root selected. Go to Members tab to select a root member.
+        No root selected. Go to Members tab to set a root member.
       </p>
     </div>
 
-    <!-- Tree rendering -->
-    <div v-else class="inline-block">
+    <div v-else :class="viewMode === 'list' ? 'inline-block' : 'w-full'">
+      <!-- Controls -->
       <div class="flex justify-between items-center mb-4 gap-8">
-        <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-300">Family Tree</h2>
-        <div class="space-x-2">
-          <button @click="expandAll" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
-            Expand All
-          </button>
-          <button @click="collapseAll" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">
-            Collapse All
-          </button>
+        <!-- View toggle -->
+        <div class="flex items-center gap-3">
+          <label class="flex items-center gap-1 cursor-pointer">
+            <input type="radio" v-model="viewMode" value="tree" class="accent-blue-500" />
+            <span class="text-sm font-medium">Tree</span>
+          </label>
+          <label class="flex items-center gap-1 cursor-pointer">
+            <input type="radio" v-model="viewMode" value="list" class="accent-blue-500" />
+            <span class="text-sm font-medium">List</span>
+          </label>
+        </div>
+        <!-- Expand/Collapse (List only) -->
+        <div v-if="viewMode === 'list'" class="space-x-2">
+          <button @click="expandAll" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">Expand All</button>
+          <button @click="collapseAll" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">Collapse All</button>
         </div>
       </div>
-      <ul class="list-none">
+
+      <!-- List view -->
+      <ul v-if="viewMode === 'list'" class="list-none">
         <tree-node :member="rootMember" :members="connectedMembers" :expanded-nodes="expandedNodes"></tree-node>
       </ul>
+
+      <!-- Tree view (top-down) -->
+      <TreeChart v-else :members="connectedMembers" :root="rootMember" />
     </div>
   </div>
 </template>

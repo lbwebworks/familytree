@@ -84,7 +84,7 @@ export default {
         <button @click="activeTab = 'tree'"
                 :class="activeTab === 'tree' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400'"
                 class="py-2 px-1 border-b-2 font-medium text-sm">
-          Family Tree
+          Tree
         </button>
         <button @click="activeTab = 'members'"
                 :class="activeTab === 'members' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400'"
