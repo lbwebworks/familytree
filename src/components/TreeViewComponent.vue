@@ -1,42 +1,49 @@
 <script>
-import TreeList from './TreeListComponent.vue';
-import TreeChart from './TreeChartComponent.vue';
+import TreeList from './TreeListComponent.vue'
+import TreeChart from './TreeChartComponent.vue'
 
 export default {
-  name: "TreeViewComponent",
+  name: 'TreeViewComponent',
   components: { TreeList, TreeChart },
   props: {
     members: { type: Array, required: true },
-    root: { type: String, default: null }
+    root: { type: String, default: null },
   },
   computed: {
     rootMember() {
-      return this.members.find(m => m.parent === "root") || this.members.find(m => m.id === this.root) || null;
+      return (
+        this.members.find((m) => m.parent === 'root') ||
+        this.members.find((m) => m.id === this.root) ||
+        null
+      )
     },
     connectedMembers() {
-      return this.members.filter(m => m.parent === "root" || this.members.some(parent => parent.id === m.parent));
-    }
+      return this.members.filter(
+        (m) => m.parent === 'root' || this.members.some((parent) => parent.id === m.parent),
+      )
+    },
   },
   data() {
     return {
       expandedNodes: new Set(),
-      viewMode: 'list'
-    };
+      viewMode: 'list',
+      maxGenerations: 3,
+    }
   },
   methods: {
     expandAll() {
-      this.expandedNodes = new Set(this.connectedMembers.map(m => m.id));
+      this.expandedNodes = new Set(this.connectedMembers.map((m) => m.id))
     },
     collapseAll() {
-      this.expandedNodes = new Set();
+      this.expandedNodes = new Set()
     },
     toggleNode(id) {
-      const next = new Set(this.expandedNodes);
-      next.has(id) ? next.delete(id) : next.add(id);
-      this.expandedNodes = next;
-    }
-  }
-};
+      const next = new Set(this.expandedNodes)
+      next.has(id) ? next.delete(id) : next.add(id)
+      this.expandedNodes = next
+    },
+  },
+}
 </script>
 
 <template>
@@ -61,8 +68,27 @@ export default {
           </label>
         </div>
         <div v-if="viewMode === 'list'" class="space-x-2">
-          <button @click="expandAll" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">Expand All</button>
-          <button @click="collapseAll" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">Collapse All</button>
+          <button
+            @click="expandAll"
+            class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm"
+          >
+            Expand All
+          </button>
+          <button
+            @click="collapseAll"
+            class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+          >
+            Collapse All
+          </button>
+        </div>
+        <div v-if="viewMode === 'tree'" class="flex items-center gap-2">
+          <label class="text-sm font-medium">Generations:</label>
+          <select
+            v-model.number="maxGenerations"
+            class="border rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+          >
+            <option v-for="n in [3, 4, 5, 6, 7, 8, 9, 10]" :key="n" :value="n">{{ n }}</option>
+          </select>
         </div>
       </div>
 
@@ -80,6 +106,7 @@ export default {
         v-else
         :members="connectedMembers"
         :root="rootMember"
+        :max-generations="maxGenerations"
       />
     </div>
   </div>
