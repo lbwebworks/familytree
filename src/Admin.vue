@@ -21,6 +21,7 @@ export default {
       editingMember: null,
       activeTab: 'tree',
       expandedNodes: new Set(),
+      maxGenerations: 3,
     }
   },
   computed: {
@@ -148,7 +149,18 @@ export default {
     </div>
 
     <!-- Tree tab -->
-    <TreeChart v-else-if="activeTab === 'tree'" :members="connectedMembers" :root="rootMember" />
+    <div v-else-if="activeTab === 'tree'">
+      <div class="flex justify-end items-center gap-2 mb-4">
+        <label class="text-sm font-medium">Generations:</label>
+        <select
+          v-model.number="maxGenerations"
+          class="border rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+        >
+          <option v-for="n in [3, 4, 5, 6, 7, 8, 9, 10]" :key="n" :value="n">{{ n }}</option>
+        </select>
+      </div>
+      <TreeChart :members="connectedMembers" :root="rootMember" :max-generations="maxGenerations" />
+    </div>
 
     <!-- List tab -->
     <div v-else-if="activeTab === 'list'">
