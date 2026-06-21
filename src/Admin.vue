@@ -14,6 +14,7 @@ export default {
   data() {
     return {
       members: [],
+      unions: [],
       root: null,
       showForm: false,
       editingMember: null,
@@ -41,13 +42,17 @@ export default {
       this.showForm = false
       this.editingMember = null
     },
-    saveMember(member) {
+    saveMember({ member, unions }) {
       if (this.editingMember) {
         const idx = this.members.findIndex((m) => m.id === member.id)
         if (idx !== -1) this.members.splice(idx, 1, member)
       } else {
         this.members.push(member)
       }
+      this.unions = [
+        ...this.unions.filter((u) => u.partnerAId !== member.id),
+        ...unions,
+      ]
       this.closeForm()
     },
     setRoot(id) {
@@ -60,6 +65,7 @@ export default {
     },
     deleteMember(id) {
       this.members = this.members.filter((m) => m.id !== id)
+      this.unions = this.unions.filter((u) => u.partnerAId !== id)
     },
     expandAll() {
       this.expandedNodes = new Set(this.connectedMembers.map((m) => m.id))
@@ -81,6 +87,7 @@ export default {
 
     const applyData = (data) => {
       this.members = data.members
+      this.unions = data.unions || []
       const rootMember = data.members.find((m) => m.parent === 'root')
       this.root = rootMember ? rootMember.id : null
     }
@@ -178,7 +185,7 @@ export default {
           <option v-for="n in [3, 4, 5, 6, 7, 8, 9, 10]" :key="n" :value="n">{{ n }}</option>
         </select>
       </div>
-      <TreeChart :members="connectedMembers" :root="rootMember" :max-generations="maxGenerations" />
+      <TreeChart :members="connectedMembers" :root="rootMember" :max-generations="maxGenerations" :unions="unions" />
     </div>
 
     <!-- List tab -->
@@ -201,6 +208,7 @@ export default {
         :members="connectedMembers"
         :root="rootMember"
         :expanded-nodes="expandedNodes"
+        :unions="unions"
         @toggle="toggleNode"
       />
     </div>
@@ -209,6 +217,7 @@ export default {
     <Members
       v-else-if="activeTab === 'manage'"
       :members="members"
+      :unions="unions"
       :root="root"
       @set-root="setRoot"
       @edit="openForm"
@@ -220,6 +229,7 @@ export default {
       v-if="showForm"
       :member="editingMember"
       :members="members"
+      :unions="unions"
       @save="saveMember"
       @cancel="closeForm"
     />

@@ -105,56 +105,66 @@
 
         <!-- Spouse Section (Expandable) -->
         <div class="col-span-2 border-t dark:border-gray-600 pt-4">
-          <button type="button" @click="showSpouse = !showSpouse" 
-                  class="flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium">
-            <span :class="showSpouse ? 'rotate-90' : ''" class="transform transition-transform mr-2">▶</span>
-            Spouse Information (Optional)
-          </button>
-          
-          <div v-if="showSpouse" class="grid grid-cols-2 gap-6 mt-4">
-            <!-- Spouse First Name -->
-            <div>
-              <label class="block text-gray-700 font-medium">Spouse First Name</label>
-              <input v-model="form.spousefirstname" type="text"
-                     class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" />
-            </div>
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-semibold text-gray-700 dark:text-gray-300">Partnerships</h3>
+            <button type="button" @click="addUnion"
+                    class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">
+              + Add Partnership
+            </button>
+          </div>
 
-            <!-- Spouse Middle Name -->
-            <div>
-              <label class="block text-gray-700 font-medium">Spouse Middle Name</label>
-              <input v-model="form.spousemiddlename" type="text"
-                     class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" />
-            </div>
+          <div v-if="formUnions.length === 0" class="text-sm text-gray-400 dark:text-gray-500 italic">
+            No partnerships yet. Click "Add Partnership" to add one.
+          </div>
 
-            <!-- Spouse Last Name -->
-            <div>
-              <label class="block text-gray-700 font-medium">Spouse Last Name</label>
-              <input v-model="form.spouselastname" type="text"
-                     class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" />
+          <div v-for="(union, idx) in formUnions" :key="union.id"
+               class="mb-4 p-4 border rounded-lg dark:border-gray-600 bg-gray-50 dark:bg-gray-700/40">
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-medium text-sm text-gray-700 dark:text-gray-300">Partnership {{ idx + 1 }}</span>
+              <button type="button" @click="removeUnion(idx)"
+                      class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs">Remove</button>
             </div>
-
-            <!-- Spouse Nickname -->
-            <div>
-              <label class="block text-gray-700 font-medium">Spouse Nickname</label>
-              <input v-model="form.spousenickname" type="text"
-                     class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" />
-            </div>
-
-            <!-- Spouse Photo -->
-            <div>
-              <label class="block text-gray-700 font-medium">Spouse Photo</label>
-              <div class="flex items-center space-x-3">
-                <input @change="handleSpousePhotoUpload" type="file" accept="image/*" ref="spousePhotoInput"
-                       class="hidden" />
-                <button type="button" @click="$refs.spousePhotoInput.click()"
-                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm">
-                  Choose File
-                </button>
-                <button type="button" @click="removeSpousePhoto" v-if="form.spousephoto && form.spousephoto !== './photos/default.jpg'"
-                        class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded text-sm">
-                  Remove
-                </button>
-                <img :src="form.spousephoto || './photos/default.jpg'" alt="spouse preview" class="w-16 h-16 rounded-full border-2 border-gray-200" />
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Partner First Name</label>
+                <input v-model="union.partnerB.firstname" type="text"
+                       class="w-full border rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Partner Middle Name</label>
+                <input v-model="union.partnerB.middlename" type="text"
+                       class="w-full border rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Partner Last Name</label>
+                <input v-model="union.partnerB.lastname" type="text"
+                       class="w-full border rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Partner Nickname</label>
+                <input v-model="union.partnerB.nickname" type="text"
+                       class="w-full border rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Partner Gender</label>
+                <select v-model="union.partnerB.gender"
+                        class="w-full border rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100">
+                  <option value="">-- Select --</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Partner Photo</label>
+                <div class="flex items-center gap-2 mt-1">
+                  <input @change="handlePartnerPhotoUpload($event, idx)" type="file" accept="image/*"
+                         :ref="'partnerPhotoInput-' + idx" class="hidden" />
+                  <button type="button" @click="$refs['partnerPhotoInput-' + idx][0].click()"
+                          class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs">Choose</button>
+                  <button type="button" @click="removePartnerPhoto(idx)" v-if="union.partnerB.photo"
+                          class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs">Remove</button>
+                  <img :src="union.partnerB.photo || './photos/default.jpg'" alt="partner" class="w-10 h-10 rounded-full border-2 border-gray-200 object-cover" />
+                </div>
               </div>
             </div>
           </div>
@@ -242,16 +252,13 @@ export default {
   name: "MemberComponent",
   props: {
     member: { type: Object, default: null }, // if editing, pass member object
-    members: { type: Array, required: true } // all members for parent dropdown
+    members: { type: Array, required: true }, // all members for parent dropdown
+    unions: { type: Array, default: () => [] }, // all unions
   },
   data() {
     return {
       form: this.member ? { 
         ...this.member,
-        // Handle backward compatibility for old spousename field
-        spousefirstname: this.member.spousefirstname || (this.member.spousename ? this.member.spousename.split(' ')[0] || '' : ''),
-        spousemiddlename: this.member.spousemiddlename || (this.member.spousename ? this.member.spousename.split(' ')[1] || '' : ''),
-        spouselastname: this.member.spouselastname || (this.member.spousename ? this.member.spousename.split(' ').slice(2).join(' ') || '' : '')
       } : {
         id: Date.now().toString(), // simple unique ID
         firstname: "",
@@ -263,16 +270,25 @@ export default {
         photo: "",
         remarks: "",
         parent: null,
-        spousefirstname: "",
-        spousemiddlename: "",
-        spouselastname: "",
-        spousenickname: "",
-        spousephoto: ""
       },
-      showSpouse: false,
+      formUnions: (() => {
+        const memberId = this.member?.id
+        if (!memberId) return []
+        const existing = this.unions
+          .filter((u) => u.partnerAId === memberId)
+          .map((u) => ({ ...u, partnerB: u.partnerB ? { ...u.partnerB } : { firstname: '', middlename: '', lastname: '', nickname: '', photo: '', gender: '' } }))
+        if (existing.length === 0 && this.member) {
+          const m = this.member
+          if (m.spousefirstname || m.spouselastname) {
+            existing.push({ id: `u_${m.id}`, partnerAId: m.id, partnerB: { firstname: m.spousefirstname || '', middlename: m.spousemiddlename || '', lastname: m.spouselastname || '', nickname: m.spousenickname || '', photo: m.spousephoto || '', gender: m.gender === 'Male' ? 'Female' : 'Male' } })
+          }
+        }
+        return existing
+      })(),
+      cropTargetUnionIdx: 0,
       showCropModal: false,
       cropImage: null,
-      cropType: 'photo', // 'photo' or 'spouse'
+      cropType: 'photo', // 'photo' or 'partner'
       cropBox: { x: 0, y: 0, size: 100 },
       isDragging: false,
       dragStart: { x: 0, y: 0 },
@@ -296,6 +312,12 @@ export default {
     },
   },
   methods: {
+    addUnion() {
+      this.formUnions.push({ id: `u_${this.form.id}_${Date.now()}`, partnerAId: this.form.id, partnerB: { firstname: '', middlename: '', lastname: '', nickname: '', photo: '', gender: '' } })
+    },
+    removeUnion(index) {
+      this.formUnions.splice(index, 1)
+    },
     handlePhotoUpload(event) {
       const file = event.target.files[0];
       if (file) {
@@ -308,13 +330,14 @@ export default {
         reader.readAsDataURL(file);
       }
     },
-    handleSpousePhotoUpload(event) {
+    handlePartnerPhotoUpload(event, unionIdx) {
       const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
           this.cropImage = e.target.result;
-          this.cropType = 'spouse';
+          this.cropType = 'partner';
+          this.cropTargetUnionIdx = unionIdx;
           this.showCropModal = true;
         };
         reader.readAsDataURL(file);
@@ -378,8 +401,9 @@ export default {
       const photoPath = `./photos/${this.croppedImage.filename}`;
       if (this.cropType === 'photo') {
         this.form.photo = photoPath;
-      } else {
-        this.form.spousephoto = photoPath;
+      } else if (this.cropType === 'partner') {
+        const u = this.formUnions[this.cropTargetUnionIdx]
+        if (u && u.partnerB) u.partnerB.photo = photoPath
       }
       
       this.showSavePrompt = false;
@@ -472,14 +496,15 @@ export default {
       this.cropBox.x = Math.max(0, newX);
       this.cropBox.y = Math.max(0, newY);
     },
+    removePartnerPhoto(unionIdx) {
+      const u = this.formUnions[unionIdx]
+      if (u && u.partnerB) u.partnerB.photo = ''
+    },
     removePhoto() {
       this.form.photo = "";
     },
-    removeSpousePhoto() {
-      this.form.spousephoto = "";
-    },
     saveMember() {
-      this.$emit("save", this.form);
+      this.$emit("save", { member: this.form, unions: this.formUnions.map((u) => ({ ...u, partnerAId: this.form.id })) });
     }
   }
 };

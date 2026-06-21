@@ -10,12 +10,7 @@
       "gender": "Male",
       "photo": "./photos/m1.jpg",
       "remarks": "Family patriarch",
-      "parent": "root",
-      "spousefirstname": "Margaret",
-      "spousemiddlename": "Rose",
-      "spouselastname": "Rivera",
-      "spousenickname": "Maggie",
-      "spousephoto": "./photos/f1.jpg"
+      "parent": "root"
     },
     {
       "id": "d2",
@@ -28,11 +23,7 @@
       "photo": "./photos/m2.jpg",
       "remarks": "",
       "parent": "d1",
-      "spousefirstname": "Linda",
-      "spousemiddlename": "Mae",
-      "spouselastname": "Rivera",
-      "spousenickname": "Lin",
-      "spousephoto": "./photos/f2.jpg"
+      "unionId": "u_d1"
     },
     {
       "id": "d3",
@@ -45,11 +36,7 @@
       "photo": "./photos/f3.jpg",
       "remarks": "",
       "parent": "d1",
-      "spousefirstname": "Carlos",
-      "spousemiddlename": "Luis",
-      "spouselastname": "Santos",
-      "spousenickname": "Carl",
-      "spousephoto": "./photos/m3.jpg"
+      "unionId": "u_d1"
     },
     {
       "id": "d4",
@@ -62,11 +49,7 @@
       "photo": "./photos/m4.jpg",
       "remarks": "",
       "parent": "d1",
-      "spousefirstname": "Susan",
-      "spousemiddlename": "Kay",
-      "spouselastname": "Rivera",
-      "spousenickname": "Sue",
-      "spousephoto": "./photos/f4.jpg"
+      "unionId": "u_d1"
     },
     {
       "id": "d5",
@@ -79,11 +62,7 @@
       "photo": "./photos/m5.jpg",
       "remarks": "",
       "parent": "d2",
-      "spousefirstname": "Ashley",
-      "spousemiddlename": "Nicole",
-      "spouselastname": "Rivera",
-      "spousenickname": "Ash",
-      "spousephoto": "./photos/f5.jpg"
+      "unionId": "u_d2"
     },
     {
       "id": "d6",
@@ -96,11 +75,7 @@
       "photo": "./photos/f6.jpg",
       "remarks": "",
       "parent": "d2",
-      "spousefirstname": "Marco",
-      "spousemiddlename": "",
-      "spouselastname": "Cruz",
-      "spousenickname": "",
-      "spousephoto": "./photos/m6.jpg"
+      "unionId": "u_d2"
     },
     {
       "id": "d7",
@@ -113,11 +88,7 @@
       "photo": "./photos/m7.jpg",
       "remarks": "",
       "parent": "d2",
-      "spousefirstname": "",
-      "spousemiddlename": "",
-      "spouselastname": "",
-      "spousenickname": "",
-      "spousephoto": ""
+      "unionId": "u_d2"
     },
     {
       "id": "d8",
@@ -130,11 +101,7 @@
       "photo": "./photos/m8.jpg",
       "remarks": "",
       "parent": "d3",
-      "spousefirstname": "Maria",
-      "spousemiddlename": "Grace",
-      "spouselastname": "Santos",
-      "spousenickname": "Grace",
-      "spousephoto": "./photos/f7.jpg"
+      "unionId": "u_d3"
     },
     {
       "id": "d9",
@@ -147,11 +114,7 @@
       "photo": "./photos/f8.jpg",
       "remarks": "",
       "parent": "d3",
-      "spousefirstname": "Daniel",
-      "spousemiddlename": "",
-      "spouselastname": "Reyes",
-      "spousenickname": "Dan",
-      "spousephoto": "./photos/m9.jpg"
+      "unionId": "u_d3"
     },
     {
       "id": "d10",
@@ -164,11 +127,7 @@
       "photo": "./photos/m10.jpg",
       "remarks": "",
       "parent": "d4",
-      "spousefirstname": "",
-      "spousemiddlename": "",
-      "spouselastname": "",
-      "spousenickname": "",
-      "spousephoto": ""
+      "unionId": "u_d4"
     },
     {
       "id": "d11",
@@ -181,11 +140,7 @@
       "photo": "./photos/f9.jpg",
       "remarks": "",
       "parent": "d4",
-      "spousefirstname": "Ricardo",
-      "spousemiddlename": "",
-      "spouselastname": "Gomez",
-      "spousenickname": "Ricky",
-      "spousephoto": "./photos/m11.jpg"
+      "unionId": "u_d4"
     },
     {
       "id": "d12",
@@ -198,11 +153,7 @@
       "photo": "./photos/m12.jpg",
       "remarks": "",
       "parent": "d5",
-      "spousefirstname": "",
-      "spousemiddlename": "",
-      "spouselastname": "",
-      "spousenickname": "",
-      "spousephoto": ""
+      "unionId": "u_d5"
     },
     {
       "id": "d13",
@@ -215,11 +166,7 @@
       "photo": "./photos/f10.jpg",
       "remarks": "",
       "parent": "d5",
-      "spousefirstname": "",
-      "spousemiddlename": "",
-      "spouselastname": "",
-      "spousenickname": "",
-      "spousephoto": ""
+      "unionId": "u_d5"
     },
     {
       "id": "d14",
@@ -232,11 +179,7 @@
       "photo": "./photos/m13.jpg",
       "remarks": "",
       "parent": "d6",
-      "spousefirstname": "",
-      "spousemiddlename": "",
-      "spouselastname": "",
-      "spousenickname": "",
-      "spousephoto": ""
+      "unionId": "u_d6"
     },
     {
       "id": "d15",
@@ -249,11 +192,7 @@
       "photo": "./photos/f11.jpg",
       "remarks": "",
       "parent": "d6",
-      "spousefirstname": "",
-      "spousemiddlename": "",
-      "spouselastname": "",
-      "spousenickname": "",
-      "spousephoto": ""
+      "unionId": "u_d6b"
     },
     {
       "id": "d16",
@@ -266,11 +205,7 @@
       "photo": "./photos/m14.jpg",
       "remarks": "",
       "parent": "d8",
-      "spousefirstname": "",
-      "spousemiddlename": "",
-      "spouselastname": "",
-      "spousenickname": "",
-      "spousephoto": ""
+      "unionId": "u_d8"
     },
     {
       "id": "d17",
@@ -283,11 +218,7 @@
       "photo": "./photos/f12.jpg",
       "remarks": "",
       "parent": "d8",
-      "spousefirstname": "",
-      "spousemiddlename": "",
-      "spouselastname": "",
-      "spousenickname": "",
-      "spousephoto": ""
+      "unionId": "u_d8"
     },
     {
       "id": "d18",
@@ -300,11 +231,7 @@
       "photo": "./photos/f13.jpg",
       "remarks": "",
       "parent": "d9",
-      "spousefirstname": "",
-      "spousemiddlename": "",
-      "spouselastname": "",
-      "spousenickname": "",
-      "spousephoto": ""
+      "unionId": "u_d9"
     },
     {
       "id": "d19",
@@ -317,11 +244,7 @@
       "photo": "./photos/m15.jpg",
       "remarks": "",
       "parent": "d9",
-      "spousefirstname": "",
-      "spousemiddlename": "",
-      "spouselastname": "",
-      "spousenickname": "",
-      "spousephoto": ""
+      "unionId": "u_d9"
     },
     {
       "id": "d20",
@@ -334,11 +257,7 @@
       "photo": "./photos/f14.jpg",
       "remarks": "",
       "parent": "d11",
-      "spousefirstname": "",
-      "spousemiddlename": "",
-      "spouselastname": "",
-      "spousenickname": "",
-      "spousephoto": ""
+      "unionId": "u_d11"
     },
     {
       "id": "d21",
@@ -351,11 +270,7 @@
       "photo": "./photos/m16.jpg",
       "remarks": "",
       "parent": "d11",
-      "spousefirstname": "",
-      "spousemiddlename": "",
-      "spouselastname": "",
-      "spousenickname": "",
-      "spousephoto": ""
+      "unionId": "u_d11"
     },
     {
       "id": "d22",
@@ -368,11 +283,7 @@
       "photo": "./photos/f15.jpg",
       "remarks": "",
       "parent": "d13",
-      "spousefirstname": "",
-      "spousemiddlename": "",
-      "spouselastname": "",
-      "spousenickname": "",
-      "spousephoto": ""
+      "unionId": "u_d13"
     },
     {
       "id": "d23",
@@ -385,11 +296,7 @@
       "photo": "./photos/m17.jpg",
       "remarks": "",
       "parent": "d14",
-      "spousefirstname": "",
-      "spousemiddlename": "",
-      "spouselastname": "",
-      "spousenickname": "",
-      "spousephoto": ""
+      "unionId": "u_d14"
     },
     {
       "id": "d24",
@@ -402,11 +309,7 @@
       "photo": "./photos/f16.jpg",
       "remarks": "",
       "parent": "d15",
-      "spousefirstname": "",
-      "spousemiddlename": "",
-      "spouselastname": "",
-      "spousenickname": "",
-      "spousephoto": ""
+      "unionId": "u_d15"
     },
     {
       "id": "d25",
@@ -419,11 +322,7 @@
       "photo": "./photos/m18.jpg",
       "remarks": "",
       "parent": "d16",
-      "spousefirstname": "",
-      "spousemiddlename": "",
-      "spouselastname": "",
-      "spousenickname": "",
-      "spousephoto": ""
+      "unionId": "u_d16"
     },
     {
       "id": "d26",
@@ -436,11 +335,189 @@
       "photo": "./photos/f17.jpg",
       "remarks": "",
       "parent": "d17",
-      "spousefirstname": "",
-      "spousemiddlename": "",
-      "spouselastname": "",
-      "spousenickname": "",
-      "spousephoto": ""
+      "unionId": "u_d17"
+    }
+  ],
+  "unions": [
+    {
+      "id": "u_d1",
+      "partnerAId": "d1",
+      "partnerB": {
+        "firstname": "Margaret",
+        "middlename": "Rose",
+        "lastname": "Rivera",
+        "nickname": "Maggie",
+        "photo": "./photos/f1.jpg",
+        "gender": "Female"
+      }
+    },
+    {
+      "id": "u_d2",
+      "partnerAId": "d2",
+      "partnerB": {
+        "firstname": "Linda",
+        "middlename": "Mae",
+        "lastname": "Rivera",
+        "nickname": "Lin",
+        "photo": "./photos/f2.jpg",
+        "gender": "Female"
+      }
+    },
+    {
+      "id": "u_d3",
+      "partnerAId": "d3",
+      "partnerB": {
+        "firstname": "Carlos",
+        "middlename": "Luis",
+        "lastname": "Santos",
+        "nickname": "Carl",
+        "photo": "./photos/m3.jpg",
+        "gender": "Male"
+      }
+    },
+    {
+      "id": "u_d4",
+      "partnerAId": "d4",
+      "partnerB": {
+        "firstname": "Susan",
+        "middlename": "Kay",
+        "lastname": "Rivera",
+        "nickname": "Sue",
+        "photo": "./photos/f4.jpg",
+        "gender": "Female"
+      }
+    },
+    {
+      "id": "u_d5",
+      "partnerAId": "d5",
+      "partnerB": {
+        "firstname": "Ashley",
+        "middlename": "Nicole",
+        "lastname": "Rivera",
+        "nickname": "Ash",
+        "photo": "./photos/f5.jpg",
+        "gender": "Female"
+      }
+    },
+    {
+      "id": "u_d6",
+      "partnerAId": "d6",
+      "partnerB": {
+        "firstname": "Marco",
+        "middlename": "",
+        "lastname": "Cruz",
+        "nickname": "",
+        "photo": "./photos/m6.jpg",
+        "gender": "Male"
+      }
+    },
+    {
+      "id": "u_d6b",
+      "partnerAId": "d6",
+      "partnerB": {
+        "firstname": "Anthony",
+        "middlename": "Paul",
+        "lastname": "Cruz",
+        "nickname": "Tony",
+        "photo": "./photos/m19.jpg",
+        "gender": "Male"
+      }
+    },
+    {
+      "id": "u_d8",
+      "partnerAId": "d8",
+      "partnerB": {
+        "firstname": "Maria",
+        "middlename": "Grace",
+        "lastname": "Santos",
+        "nickname": "Grace",
+        "photo": "./photos/f7.jpg",
+        "gender": "Female"
+      }
+    },
+    {
+      "id": "u_d9",
+      "partnerAId": "d9",
+      "partnerB": {
+        "firstname": "Daniel",
+        "middlename": "",
+        "lastname": "Reyes",
+        "nickname": "Dan",
+        "photo": "./photos/m9.jpg",
+        "gender": "Male"
+      }
+    },
+    {
+      "id": "u_d11",
+      "partnerAId": "d11",
+      "partnerB": {
+        "firstname": "Ricardo",
+        "middlename": "",
+        "lastname": "Gomez",
+        "nickname": "Ricky",
+        "photo": "./photos/m11.jpg",
+        "gender": "Male"
+      }
+    },
+    {
+      "id": "u_d13",
+      "partnerAId": "d13",
+      "partnerB": {
+        "firstname": "Benjamin",
+        "middlename": "Lee",
+        "lastname": "Rivera",
+        "nickname": "Ben",
+        "photo": "./photos/m19.jpg",
+        "gender": "Male"
+      }
+    },
+    {
+      "id": "u_d14",
+      "partnerAId": "d14",
+      "partnerB": {
+        "firstname": "Maya",
+        "middlename": "Rose",
+        "lastname": "Santos",
+        "nickname": "May",
+        "photo": "./photos/f18.jpg",
+        "gender": "Female"
+      }
+    },
+    {
+      "id": "u_d15",
+      "partnerAId": "d15",
+      "partnerB": {
+        "firstname": "Owen",
+        "middlename": "Charles",
+        "lastname": "Reed",
+        "nickname": "Owen",
+        "photo": "./photos/m20.jpg",
+        "gender": "Male"
+      }
+    },
+    {
+      "id": "u_d16",
+      "partnerAId": "d16",
+      "partnerB": {
+        "firstname": "Nora",
+        "middlename": "Lynn",
+        "lastname": "Diaz",
+        "nickname": "Nora",
+        "photo": "./photos/f19.jpg",
+        "gender": "Female"
+      }
+    },
+    {
+      "id": "u_d17",
+      "partnerAId": "d17",
+      "partnerB": {
+        "firstname": "Omar",
+        "middlename": "Luis",
+        "lastname": "Stone",
+        "nickname": "Omar",
+        "photo": "./photos/m20.jpg",
+        "gender": "Male"
+      }
     }
   ]
 }

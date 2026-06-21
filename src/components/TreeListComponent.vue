@@ -4,7 +4,9 @@ export default {
   props: {
     members: { type: Array, required: true },
     root: { type: Object, required: true },
-    expandedNodes: { type: Set, required: true }
+    expandedNodes: { type: Set, required: true },
+    unions: { type: Array, default: () => [] },
+    unions: { type: Array, default: () => [] },
   },
   emits: ['toggle'],
   data() {
@@ -38,16 +40,31 @@ export default {
         .sort((a, b) => new Date(a.birthdate) - new Date(b.birthdate));
     },
     spouseName(m) {
-      if (m.spousefirstname || m.spousemiddlename || m.spouselastname) {
-        return `${m.spousefirstname || ''} ${m.spousemiddlename || ''} ${m.spouselastname || ''}`.trim();
+      const union = this.unions.find((u) => u.partnerAId === m.id)
+      if (union?.partnerB) {
+        const b = union.partnerB
+        return [b.firstname, b.middlename, b.lastname].filter(Boolean).join(' ')
       }
-      return m.spousename || '';
+      if (m.spousefirstname || m.spousemiddlename || m.spouselastname) {
+        return `${m.spousefirstname || ''} ${m.spousemiddlename || ''} ${m.spouselastname || ''}`.trim()
+      }
+      return m.spousename || ''
+    },
+    spousePhoto(m) {
+      const union = this.unions.find((u) => u.partnerAId === m.id)
+      if (union?.partnerB) return union.partnerB.photo || ''
+      return m.spousephoto || ''
     },
     displayName(m) {
       return m.nickname || m.firstname || m.lastname || '[Member]';
     },
     spouseDisplayName(m) {
-      return m.spousenickname || m.spousefirstname || m.spouselastname || '[Spouse]';
+      const union = this.unions.find((u) => u.partnerAId === m.id)
+      if (union?.partnerB) {
+        const b = union.partnerB
+        return b.nickname || b.firstname || b.lastname || '[Spouse]'
+      }
+      return m.spousenickname || m.spousefirstname || m.spouselastname || '[Spouse]'
     },
     isMale(m) {
       return m.gender !== 'Female';
@@ -199,7 +216,7 @@ export default {
                 <span class="text-gray-400 text-xs">♥</span>
                 <div class="flex items-center gap-2">
                   <img
-                    :src="member.spousephoto || './photos/default.jpg'"
+                    :src="spousePhoto(member) || './photos/default.jpg'"
                     class="w-10 h-10 rounded-full border-2 object-cover flex-shrink-0"
                     :class="isMale(member) ? 'border-pink-200 dark:border-pink-700' : 'border-blue-200 dark:border-blue-700'"
                   />

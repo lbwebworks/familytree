@@ -13,6 +13,7 @@ export default {
     members: { type: Array, required: true },
     root: { type: Object, required: true },
     maxGenerations: { type: Number, default: 3 },
+    unions: { type: Array, default: () => [] },
   },
   computed: {
     treeLayout() {
@@ -48,7 +49,46 @@ export default {
         .filter((c) => c.parent === id)
         .sort((a, b) => new Date(a.birthdate) - new Date(b.birthdate))
     },
-    nodeWidth() {
+    unionsForMember(memberId) {
+      const explicit = this.unions.filter((u) => u.partnerAId === memberId)
+      if (explicit.length) return explicit
+      // Backward compat: derive implicit union from old spouse fields on member record
+      const member = this.members.find((m) => m.id === memberId)
+      if (!member) return []
+      const hasChildren = this.members.some((m) => m.parent === memberId)
+      const hasSpouse = member.spousefirstname || member.spouselastname
+      if (hasChildren || hasSpouse) {
+        return [{
+          id: `_implicit_${memberId}`,
+          partnerAId: memberId,
+          partnerB: hasSpouse ? {
+            firstname: member.spousefirstname || '',
+            middlename: member.spousemiddlename || '',
+            lastname: member.spouselastname || '',
+            nickname: member.spousenickname || '',
+            photo: member.spousephoto || '',
+            gender: member.gender === 'Male' ? 'Female' : 'Male',
+          } : null,
+        }]
+      }
+      return []
+    },
+    childrenOfUnion(unionId, memberId) {
+      const allChildren = this.childrenOf(memberId)
+      const anyExplicit = allChildren.some((c) => c.unionId)
+      if (anyExplicit) return allChildren.filter((c) => c.unionId === unionId)
+      return allChildren
+    },
+    spouseDisplayNameFor(partnerB) {
+      if (!partnerB) return '[Spouse]'
+      return partnerB.nickname || partnerB.firstname || partnerB.lastname || '[Spouse]'
+    },
+    spouseIsMale(union) {
+      if (union.partnerB?.gender) return union.partnerB.gender === 'Male'
+      const a = this.members.find((m) => m.id === union.partnerAId)
+      return a?.gender === 'Female'
+    },
+    nodeWidth(member) {
       return CARD_WIDTH
     },
     spouseName(m) {
@@ -69,14 +109,23 @@ export default {
     },
     buildTree(member, depth) {
       const canDescend = depth + 1 < this.maxGenerations
-      return {
-        member,
-        depth,
-        children: canDescend
-          ? this.childrenOf(member.id).map((child) => this.buildTree(child, depth + 1))
-          : [],
-        subtreeWidth: 0,
+      const memberUnions = this.unionsForMember(member.id)
+      if (!canDescend || memberUnions.length === 0) {
+        return { type: 'member', member, depth, union: null, children: [], subtreeWidth: 0 }
       }
+      if (memberUnions.length === 1) {
+        const union = memberUnions[0]
+        const children = this.childrenOfUnion(union.id, member.id).map((c) => this.buildTree(c, depth + 1))
+        return { type: 'member', member, depth, union, children, subtreeWidth: 0 }
+      }
+      // Multiple unions: insert union nodes as intermediates
+      const unionNodes = memberUnions.map((union) => {
+        const childDepth = depth + 2
+        const children = this.childrenOfUnion(union.id, member.id)
+          .map((c) => (childDepth < this.maxGenerations ? this.buildTree(c, childDepth) : { type: 'member', member: c, depth: childDepth, union: null, children: [], subtreeWidth: 0 }))
+        return { type: 'union', union, depth: depth + 1, children, subtreeWidth: 0 }
+      })
+      return { type: 'member', member, depth, union: null, children: unionNodes, subtreeWidth: 0 }
     },
     measureTree(node) {
       const ownWidth = this.nodeWidth(node.member)
@@ -98,7 +147,9 @@ export default {
       const centerX = left + node.subtreeWidth / 2
 
       const positionedNode = {
-        member: node.member,
+        type: node.type || 'member',
+        member: node.member || null,
+        union: node.union || null,
         depth,
         left: centerX - ownWidth / 2,
         top,
@@ -200,66 +251,88 @@ export default {
 
       <div
         v-for="node in treeLayout.nodes"
-        :key="node.member.id"
+        :key="node.member ? node.member.id : node.union.id"
         class="absolute"
         :style="{ left: `${node.left}px`, top: `${node.top}px` }"
       >
-        <div
-          class="relative group flex flex-col items-center w-16"
-        >
+        <!-- Union intermediate node (multi-union case): just show the spouse -->
+        <div v-if="node.type === 'union'" class="flex flex-col items-center w-16">
           <img
-            :src="node.member.photo || './photos/default.jpg'"
+            :src="node.union.partnerB?.photo || './photos/default.jpg'"
             class="w-16 h-16 rounded-full border-2 object-cover"
-            :class="
-              isMale(node.member)
-                ? 'border-blue-300 dark:border-blue-700'
-                : 'border-pink-300 dark:border-pink-700'
-            "
+            :class="spouseIsMale(node.union) ? 'border-blue-300 dark:border-blue-700' : 'border-pink-300 dark:border-pink-700'"
           />
           <span
             class="mt-1 text-xs font-medium text-center leading-tight"
-            :class="
-              isMale(node.member)
-                ? 'text-blue-700 dark:text-blue-300'
-                : 'text-pink-700 dark:text-pink-300'
-            "
+            :class="spouseIsMale(node.union) ? 'text-blue-700 dark:text-blue-300' : 'text-pink-700 dark:text-pink-300'"
           >
-            {{ displayName(node.member) }}
+            {{ spouseDisplayNameFor(node.union.partnerB) }}
           </span>
+        </div>
 
-          <div
-            v-if="spouseName(node.member)"
-            :class="
-              isRootMember(node.member)
-                ? 'absolute left-full top-1/2 z-20 flex -translate-y-1/2 items-center'
-                : 'absolute left-full top-1/2 z-20 flex -translate-y-1/2 items-center opacity-0 -translate-x-2 pointer-events-none transition-all duration-300 ease-out group-hover:translate-x-0 group-hover:opacity-100 group-hover:pointer-events-auto'
-            "
-          >
-            <div class="ml-2 flex items-start gap-2">
-              <span class="mt-5 text-gray-400 text-xs">♥</span>
-              <div class="flex w-16 flex-col items-center">
+        <!-- Member node -->
+        <div v-else class="flex items-start gap-1">
+          <div class="flex flex-col items-center w-16">
+            <img
+              :src="node.member.photo || './photos/default.jpg'"
+              class="w-16 h-16 rounded-full border-2 object-cover"
+              :class="
+                isMale(node.member)
+                  ? 'border-blue-300 dark:border-blue-700'
+                  : 'border-pink-300 dark:border-pink-700'
+              "
+            />
+            <span
+              class="mt-1 text-xs font-medium text-center leading-tight"
+              :class="
+                isMale(node.member)
+                  ? 'text-blue-700 dark:text-blue-300'
+                  : 'text-pink-700 dark:text-pink-300'
+              "
+            >
+              {{ displayName(node.member) }}
+            </span>
+          </div>
+
+          <!-- Spouse from union -->
+          <template v-if="node.union && node.union.partnerB">
+            <!-- Root: always visible -->
+            <template v-if="isRootMember(node.member)">
+              <span class="text-gray-400 text-xs mt-5">♥</span>
+              <div class="flex flex-col items-center w-16">
                 <img
-                  :src="node.member.spousephoto || './photos/default.jpg'"
-                  class="h-16 w-16 rounded-full border-2 object-cover"
-                  :class="
-                    isMale(node.member)
-                      ? 'border-pink-300 dark:border-pink-700'
-                      : 'border-blue-300 dark:border-blue-700'
-                  "
+                  :src="node.union.partnerB.photo || './photos/default.jpg'"
+                  class="w-16 h-16 rounded-full border-2 object-cover"
+                  :class="spouseIsMale(node.union) ? 'border-blue-300 dark:border-blue-700' : 'border-pink-300 dark:border-pink-700'"
                 />
                 <span
-                  class="mt-1 text-center text-xs font-medium leading-tight"
-                  :class="
-                    isMale(node.member)
-                      ? 'text-pink-700 dark:text-pink-300'
-                      : 'text-blue-700 dark:text-blue-300'
-                  "
+                  class="mt-1 text-xs font-medium text-center leading-tight"
+                  :class="spouseIsMale(node.union) ? 'text-blue-700 dark:text-blue-300' : 'text-pink-700 dark:text-pink-300'"
                 >
-                  {{ spouseDisplayName(node.member) }}
+                  {{ spouseDisplayNameFor(node.union.partnerB) }}
                 </span>
               </div>
+            </template>
+            <!-- Non-root: hover slide-in -->
+            <div v-else class="relative group flex items-start">
+              <div class="flex items-start gap-2 opacity-0 -translate-x-2 pointer-events-none transition-all duration-300 ease-out group-hover:translate-x-0 group-hover:opacity-100 group-hover:pointer-events-auto">
+                <span class="text-gray-400 text-xs mt-5">♥</span>
+                <div class="flex flex-col items-center w-16">
+                  <img
+                    :src="node.union.partnerB.photo || './photos/default.jpg'"
+                    class="w-16 h-16 rounded-full border-2 object-cover"
+                    :class="spouseIsMale(node.union) ? 'border-blue-300 dark:border-blue-700' : 'border-pink-300 dark:border-pink-700'"
+                  />
+                  <span
+                    class="mt-1 text-xs font-medium text-center leading-tight"
+                    :class="spouseIsMale(node.union) ? 'text-blue-700 dark:text-blue-300' : 'text-pink-700 dark:text-pink-300'"
+                  >
+                    {{ spouseDisplayNameFor(node.union.partnerB) }}
+                  </span>
+                </div>
+              </div>
             </div>
-          </div>
+          </template>
         </div>
       </div>
     </div>

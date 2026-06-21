@@ -88,7 +88,8 @@ export default {
   name: "MembersComponent",
   props: {
     members: { type: Array, required: true },
-    root: { type: String, default: null }
+    root: { type: String, default: null },
+    unions: { type: Array, default: () => [] },
   },
   data() {
     return {
@@ -145,7 +146,8 @@ export default {
   methods: {
     exportData() {
       const data = {
-        members: this.members
+        members: this.members,
+        unions: this.unions,
       };
       const blob = new Blob([JSON.stringify(data, null, 2)], {
         type: "application/json"
