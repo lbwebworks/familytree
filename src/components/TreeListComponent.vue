@@ -28,6 +28,10 @@ export default {
     }
   },
   methods: {
+    getRefEl(refName) {
+      const ref = this.$refs[refName]
+      return Array.isArray(ref) ? ref[0] : ref || null
+    },
     childrenOf(id) {
       return this.members
         .filter(c => c.parent === id)
@@ -61,26 +65,22 @@ export default {
           const children = this.expandedNodes.has(member.id) ? this.childrenOf(member.id) : [];
           if (!children.length) return;
 
-          const parentBtn = this.$refs['btn-' + member.id]?.[0];
-          const parentEl = this.$refs['node-' + member.id]?.[0];
+          const parentBtn = this.getRefEl('btn-' + member.id);
+          const parentEl = this.getRefEl('node-' + member.id);
           if (!parentBtn || !parentEl) return;
           const pBtnRect = parentBtn.getBoundingClientRect();
-          const pRect = parentEl.getBoundingClientRect();
 
-          // vertical line x = center of the toggle button
           const lineX = pBtnRect.left + pBtnRect.width / 2 - cRect.left;
-          // starts at bottom of parent card
-          const py = pRect.bottom - cRect.top;
+          const py = pBtnRect.top + pBtnRect.height / 2 - cRect.top;
 
           const childPoints = children.map(child => {
-            const childBtn = this.$refs['btn-' + child.id]?.[0];
-            const childEl = this.$refs['node-' + child.id]?.[0];
+            const childBtn = this.getRefEl('btn-' + child.id);
+            const childEl = this.getRefEl('node-' + child.id);
             if (!childBtn || !childEl) return null;
             const cBtnRect = childBtn.getBoundingClientRect();
-            const cR = childEl.getBoundingClientRect();
             return {
-              x: cR.left - cRect.left,
-              y: cR.top + cR.height / 2 - cRect.top
+              x: cBtnRect.left + cBtnRect.width / 2 - cRect.left,
+              y: cBtnRect.top + cBtnRect.height / 2 - cRect.top
             };
           }).filter(Boolean);
 
@@ -159,7 +159,7 @@ export default {
           <!-- Member node -->
           <div
             :ref="'node-' + member.id"
-            class="flex items-center gap-2 px-3 py-2 rounded-lg border"
+            class="relative group flex items-center gap-2 px-3 py-2 rounded-lg border"
             :class="isMale(member)
               ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800'
               : 'bg-pink-50 dark:bg-pink-900/30 border-pink-200 dark:border-pink-800'"
@@ -183,30 +183,29 @@ export default {
                 {{ member.remarks }}
               </span>
             </span>
-          </div>
 
-          <!-- Spouse -->
-          <template v-if="spouseName(member)">
-            <span class="text-gray-400 font-bold">♥</span>
             <div
-              class="flex items-center gap-2 px-3 py-2 rounded-lg border"
-              :class="isMale(member)
-                ? 'bg-pink-50 dark:bg-pink-900/30 border-pink-200 dark:border-pink-800'
-                : 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800'"
+              v-if="spouseName(member)"
+              class="absolute left-full top-1/2 z-20 hidden -translate-y-1/2 items-center group-hover:flex"
             >
-              <img
-                :src="member.spousephoto || './photos/default.jpg'"
-                class="w-10 h-10 rounded-full border-2 object-cover flex-shrink-0"
-                :class="isMale(member) ? 'border-pink-200 dark:border-pink-700' : 'border-blue-200 dark:border-blue-700'"
-              />
-              <span
-                class="font-medium"
-                :class="isMale(member) ? 'text-pink-900 dark:text-pink-300' : 'text-blue-900 dark:text-blue-300'"
-              >
-                {{ spouseDisplayName(member) }}
-              </span>
+              <div class="ml-2 flex items-start gap-2">
+                <span class="mt-2 text-gray-400 text-xs">♥</span>
+                <div class="flex flex-col items-center w-10">
+                  <img
+                    :src="member.spousephoto || './photos/default.jpg'"
+                    class="w-10 h-10 rounded-full border-2 object-cover flex-shrink-0"
+                    :class="isMale(member) ? 'border-pink-200 dark:border-pink-700' : 'border-blue-200 dark:border-blue-700'"
+                  />
+                  <span
+                    class="mt-1 text-[11px] leading-tight text-center whitespace-nowrap"
+                    :class="isMale(member) ? 'text-pink-900 dark:text-pink-300' : 'text-blue-900 dark:text-blue-300'"
+                  >
+                    {{ spouseDisplayName(member) }}
+                  </span>
+                </div>
+              </div>
             </div>
-          </template>
+          </div>
         </div>
       </div>
 

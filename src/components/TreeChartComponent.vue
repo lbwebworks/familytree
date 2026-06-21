@@ -1,4 +1,12 @@
 <script>
+const CARD_WIDTH = 64
+const SIBLING_GAP = 32
+const LEVEL_GAP = 152
+const TOP_PADDING = 24
+const SIDE_PADDING = 24
+const NODE_ANCHOR_Y = 86
+const BOTTOM_PADDING = 24
+
 export default {
   name: 'TreeChartComponent',
   props: {
@@ -6,37 +14,46 @@ export default {
     root: { type: Object, required: true },
     maxGenerations: { type: Number, default: 3 },
   },
-  data() {
-    return {
-      lines: [],
-      containerRect: null,
-    }
-  },
   computed: {
-    generations() {
-      const gens = []
-      let current = [this.root]
-      for (let i = 0; i < this.maxGenerations; i++) {
-        gens.push(current)
-        const next = []
-        current.forEach((m) => {
-          const children = this.childrenOf(m.id)
-          next.push(...children)
-        })
-        if (!next.length) break
-        current = next
+    treeLayout() {
+      const tree = this.buildTree(this.root, 0)
+      this.measureTree(tree)
+
+      const nodes = []
+      const lines = []
+      this.positionTree(tree, SIDE_PADDING, 0, nodes, lines)
+
+      const maxDepth = nodes.reduce((deepest, node) => Math.max(deepest, node.depth), 0)
+
+      return {
+        nodes,
+        lines,
+        width: tree.subtreeWidth + SIDE_PADDING * 2,
+        height: TOP_PADDING + maxDepth * LEVEL_GAP + NODE_ANCHOR_Y + BOTTOM_PADDING,
       }
-      return gens
     },
   },
   methods: {
+    centerTree() {
+      this.$nextTick(() => {
+        const scroller = this.$refs.scroller
+        if (!scroller) return
+
+        const maxScrollLeft = Math.max(0, scroller.scrollWidth - scroller.clientWidth)
+        scroller.scrollLeft = maxScrollLeft / 2
+      })
+    },
     childrenOf(id) {
       return this.members
         .filter((c) => c.parent === id)
         .sort((a, b) => new Date(a.birthdate) - new Date(b.birthdate))
     },
+    nodeWidth() {
+      return CARD_WIDTH
+    },
     spouseName(m) {
-      return [m.spousefirstname, m.spouselastname].filter(Boolean).join(' ')
+      const fullName = [m.spousefirstname, m.spousemiddlename, m.spouselastname].filter(Boolean).join(' ')
+      return fullName || m.spousename || ''
     },
     displayName(m) {
       return m.nickname || m.firstname || m.lastname || '[Member]'
@@ -47,99 +64,126 @@ export default {
     isMale(m) {
       return m.gender !== 'Female'
     },
-    drawLines() {
-      this.$nextTick(() => {
-        const container = this.$refs.container
-        if (!container) return
-        const cRect = container.getBoundingClientRect()
-        this.containerRect = cRect
+    buildTree(member, depth) {
+      const canDescend = depth + 1 < this.maxGenerations
+      return {
+        member,
+        depth,
+        children: canDescend
+          ? this.childrenOf(member.id).map((child) => this.buildTree(child, depth + 1))
+          : [],
+        subtreeWidth: 0,
+      }
+    },
+    measureTree(node) {
+      const ownWidth = this.nodeWidth(node.member)
+      if (!node.children.length) {
+        node.subtreeWidth = ownWidth
+        return ownWidth
+      }
 
-        const newLines = []
+      const childrenWidth =
+        node.children.reduce((total, child) => total + this.measureTree(child), 0) +
+        SIBLING_GAP * (node.children.length - 1)
 
-        // For each generation except the last, connect parents to children
-        for (let gi = 0; gi < this.generations.length - 1; gi++) {
-          const parents = this.generations[gi]
-          parents.forEach((parent) => {
-            const children = this.childrenOf(parent.id)
-            if (!children.length) return
+      node.subtreeWidth = Math.max(ownWidth, childrenWidth)
+      return node.subtreeWidth
+    },
+    positionTree(node, left, depth, nodes, lines) {
+      const ownWidth = this.nodeWidth(node.member)
+      const top = TOP_PADDING + depth * LEVEL_GAP
+      const centerX = left + node.subtreeWidth / 2
 
-            const parentEl = this.$refs['node-' + parent.id]?.[0]
-            if (!parentEl) return
-            const pRect = parentEl.getBoundingClientRect()
+      const positionedNode = {
+        member: node.member,
+        depth,
+        left: centerX - ownWidth / 2,
+        top,
+        width: ownWidth,
+        anchorX: centerX,
+        anchorTopY: top,
+        anchorBottomY: top + NODE_ANCHOR_Y,
+      }
 
-            // parent center-bottom relative to container
-            const px = pRect.left + pRect.width / 2 - cRect.left
-            const py = pRect.bottom - cRect.top
+      nodes.push(positionedNode)
 
-            // gather child top-centers
-            const childPoints = children
-              .map((child) => {
-                const childEl = this.$refs['node-' + child.id]?.[0]
-                if (!childEl) return null
-                const cR = childEl.getBoundingClientRect()
-                return {
-                  x: cR.left + cR.width / 2 - cRect.left,
-                  y: cR.top - cRect.top,
-                }
-              })
-              .filter(Boolean)
+      if (!node.children.length) {
+        return positionedNode
+      }
 
-            if (!childPoints.length) return
+      const childrenWidth =
+        node.children.reduce((total, child) => total + child.subtreeWidth, 0) +
+        SIBLING_GAP * (node.children.length - 1)
 
-            const midY = py + (childPoints[0].y - py) / 2
-
-            // vertical from parent down to mid
-            newLines.push({ x1: px, y1: py, x2: px, y2: midY })
-
-            // horizontal bar from leftmost to rightmost child
-            const minX = Math.min(...childPoints.map((p) => p.x))
-            const maxX = Math.max(...childPoints.map((p) => p.x))
-            newLines.push({ x1: minX, y1: midY, x2: maxX, y2: midY })
-
-            // vertical from mid down to each child
-            childPoints.forEach((cp) => {
-              newLines.push({ x1: cp.x, y1: midY, x2: cp.x, y2: cp.y })
-            })
-          })
-        }
-
-        this.lines = newLines
+      let childLeft = left + (node.subtreeWidth - childrenWidth) / 2
+      const childNodes = node.children.map((child) => {
+        const positionedChild = this.positionTree(child, childLeft, depth + 1, nodes, lines)
+        childLeft += child.subtreeWidth + SIBLING_GAP
+        return positionedChild
       })
+
+      const midY = positionedNode.anchorBottomY + (childNodes[0].anchorTopY - positionedNode.anchorBottomY) / 2
+
+      lines.push({
+        x1: positionedNode.anchorX,
+        y1: positionedNode.anchorBottomY,
+        x2: positionedNode.anchorX,
+        y2: midY,
+      })
+
+      lines.push({
+        x1: childNodes[0].anchorX,
+        y1: midY,
+        x2: childNodes[childNodes.length - 1].anchorX,
+        y2: midY,
+      })
+
+      childNodes.forEach((childNode) => {
+        lines.push({
+          x1: childNode.anchorX,
+          y1: midY,
+          x2: childNode.anchorX,
+          y2: childNode.anchorTopY,
+        })
+      })
+
+      return positionedNode
     },
   },
   mounted() {
-    this.drawLines()
-    window.addEventListener('resize', this.drawLines)
+    this.centerTree()
+    window.addEventListener('resize', this.centerTree)
   },
   beforeUnmount() {
-    window.removeEventListener('resize', this.drawLines)
+    window.removeEventListener('resize', this.centerTree)
   },
   watch: {
-    members() {
-      this.drawLines()
+    members: {
+      deep: true,
+      handler() {
+        this.centerTree()
+      },
     },
     root() {
-      this.drawLines()
+      this.centerTree()
     },
     maxGenerations() {
-      this.drawLines()
+      this.centerTree()
     },
   },
 }
 </script>
 
 <template>
-  <div class="overflow-x-auto">
-    <div ref="container" class="relative inline-block min-w-full">
+  <div ref="scroller" class="overflow-x-auto">
+    <div
+      class="relative mx-auto min-w-full"
+      :style="{ width: `${treeLayout.width}px`, height: `${treeLayout.height}px` }"
+    >
       <!-- SVG overlay for connector lines -->
-      <svg
-        v-if="containerRect"
-        class="absolute inset-0 pointer-events-none"
-        :width="containerRect.width"
-        :height="containerRect.height"
-      >
+      <svg class="absolute inset-0 pointer-events-none" :width="treeLayout.width" :height="treeLayout.height">
         <line
-          v-for="(line, i) in lines"
+          v-for="(line, i) in treeLayout.lines"
           :key="i"
           :x1="line.x1"
           :y1="line.y1"
@@ -150,67 +194,63 @@ export default {
         />
       </svg>
 
-      <!-- Generations -->
-      <div class="flex flex-col items-center gap-12 py-4">
+      <div
+        v-for="node in treeLayout.nodes"
+        :key="node.member.id"
+        class="absolute"
+        :style="{ left: `${node.left}px`, top: `${node.top}px` }"
+      >
         <div
-          v-for="(gen, genIndex) in generations"
-          :key="genIndex"
-          class="flex justify-center gap-6 flex-wrap"
+          class="relative group flex flex-col items-center w-16"
         >
-          <div
-            v-for="member in gen"
-            :key="member.id"
-            :ref="'node-' + member.id"
-            class="flex items-start gap-1"
+          <img
+            :src="node.member.photo || './photos/default.jpg'"
+            class="w-16 h-16 rounded-full border-2 object-cover"
+            :class="
+              isMale(node.member)
+                ? 'border-blue-300 dark:border-blue-700'
+                : 'border-pink-300 dark:border-pink-700'
+            "
+          />
+          <span
+            class="mt-1 text-xs font-medium text-center leading-tight"
+            :class="
+              isMale(node.member)
+                ? 'text-blue-700 dark:text-blue-300'
+                : 'text-pink-700 dark:text-pink-300'
+            "
           >
-            <!-- Member card -->
-            <div class="flex flex-col items-center w-20">
-              <img
-                :src="member.photo || './photos/default.jpg'"
-                class="w-16 h-16 rounded-full border-2 object-cover"
-                :class="
-                  isMale(member)
-                    ? 'border-blue-300 dark:border-blue-700'
-                    : 'border-pink-300 dark:border-pink-700'
-                "
-              />
-              <span
-                class="mt-1 text-xs font-medium text-center leading-tight"
-                :class="
-                  isMale(member)
-                    ? 'text-blue-700 dark:text-blue-300'
-                    : 'text-pink-700 dark:text-pink-300'
-                "
-              >
-                {{ displayName(member) }}
-              </span>
-            </div>
+            {{ displayName(node.member) }}
+          </span>
 
-            <!-- Spouse card -->
-            <template v-if="spouseName(member)">
-              <span class="text-gray-400 text-xs mt-5">♥</span>
-              <div class="flex flex-col items-center w-20">
+          <div
+            v-if="spouseName(node.member)"
+            class="absolute left-full top-1/2 z-20 flex -translate-y-1/2 items-center opacity-0 -translate-x-2 pointer-events-none transition-all duration-300 ease-out group-hover:translate-x-0 group-hover:opacity-100 group-hover:pointer-events-auto"
+          >
+            <div class="ml-2 flex items-start gap-2">
+              <span class="mt-5 text-gray-400 text-xs">♥</span>
+              <div class="flex w-16 flex-col items-center">
                 <img
-                  :src="member.spousephoto || './photos/default.jpg'"
-                  class="w-16 h-16 rounded-full border-2 object-cover"
+                  :src="node.member.spousephoto || './photos/default.jpg'"
+                  class="h-16 w-16 rounded-full border-2 object-cover"
                   :class="
-                    isMale(member)
+                    isMale(node.member)
                       ? 'border-pink-300 dark:border-pink-700'
                       : 'border-blue-300 dark:border-blue-700'
                   "
                 />
                 <span
-                  class="mt-1 text-xs font-medium text-center leading-tight"
+                  class="mt-1 text-center text-xs font-medium leading-tight"
                   :class="
-                    isMale(member)
+                    isMale(node.member)
                       ? 'text-pink-700 dark:text-pink-300'
                       : 'text-blue-700 dark:text-blue-300'
                   "
                 >
-                  {{ spouseDisplayName(member) }}
+                  {{ spouseDisplayName(node.member) }}
                 </span>
               </div>
-            </template>
+            </div>
           </div>
         </div>
       </div>
