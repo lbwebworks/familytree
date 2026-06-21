@@ -35,6 +35,15 @@ export default {
     },
   },
   methods: {
+    setHover(id, on) {
+      if (!this._hovered) this._hovered = new Set()
+      if (on) this._hovered.add(id)
+      else this._hovered.delete(id)
+      this.$forceUpdate()
+    },
+    isHovered(id) {
+      return !!(this._hovered && this._hovered.has(id))
+    },
     centerTree() {
       this.$nextTick(() => {
         const scroller = this.$refs.scroller
@@ -271,7 +280,9 @@ export default {
         </div>
 
         <!-- Member node -->
-        <div v-else class="flex items-start gap-1">
+           <div v-else class="flex items-start gap-1 group"
+             @mouseenter="setHover(node.member.id, true)"
+             @mouseleave="setHover(node.member.id, false)">
           <div class="flex flex-col items-center w-16">
             <img
               :src="node.member.photo || './photos/default.jpg'"
@@ -313,9 +324,19 @@ export default {
                 </span>
               </div>
             </template>
-            <!-- Non-root: hover slide-in -->
-            <div v-else class="relative group flex items-start">
-              <div class="flex items-start gap-2 opacity-0 -translate-x-2 pointer-events-none transition-all duration-300 ease-out group-hover:translate-x-0 group-hover:opacity-100 group-hover:pointer-events-auto">
+            <!-- Non-root: hover slide-in (absolute overlay) -->
+            <div v-else class="relative flex items-start">
+              <div
+                @mouseenter="setHover(node.member.id, true)"
+                @mouseleave="setHover(node.member.id, false)"
+                :class="[
+                  'absolute left-full top-0 z-50 ml-2 flex items-start gap-2 transition-all duration-200 ease-out',
+                  (isRootMember(node.member) || isHovered(node.member.id))
+                    ? 'opacity-100 translate-x-0 pointer-events-auto'
+                    : 'opacity-0 -translate-x-2 pointer-events-none'
+                ]"
+                style="will-change: transform, opacity;"
+              >
                 <span class="text-gray-400 text-xs mt-5">♥</span>
                 <div class="flex flex-col items-center w-16">
                   <img
