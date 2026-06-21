@@ -52,6 +52,9 @@ export default {
     isMale(m) {
       return m.gender !== 'Female';
     },
+    isRootMember(m) {
+      return m?.id === this.root?.id;
+    },
     drawLines() {
       this.$nextTick(() => {
         const container = this.$refs.container;
@@ -186,7 +189,11 @@ export default {
 
             <div
               v-if="spouseName(member)"
-              class="ml-0 max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-out group-hover:ml-2 group-hover:max-w-[220px] group-hover:opacity-100"
+              :class="
+                isRootMember(member)
+                  ? 'ml-2 max-w-[220px] overflow-hidden opacity-100 transition-all duration-300 ease-out'
+                  : 'ml-0 max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-out group-hover:ml-2 group-hover:max-w-[220px] group-hover:opacity-100'
+              "
             >
               <div class="flex items-center gap-2 whitespace-nowrap">
                 <span class="text-gray-400 text-xs">♥</span>

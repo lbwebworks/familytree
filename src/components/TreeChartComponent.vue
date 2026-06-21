@@ -64,6 +64,9 @@ export default {
     isMale(m) {
       return m.gender !== 'Female'
     },
+    isRootMember(m) {
+      return m?.id === this.root?.id
+    },
     buildTree(member, depth) {
       const canDescend = depth + 1 < this.maxGenerations
       return {
@@ -226,7 +229,11 @@ export default {
 
           <div
             v-if="spouseName(node.member)"
-            class="absolute left-full top-1/2 z-20 flex -translate-y-1/2 items-center opacity-0 -translate-x-2 pointer-events-none transition-all duration-300 ease-out group-hover:translate-x-0 group-hover:opacity-100 group-hover:pointer-events-auto"
+            :class="
+              isRootMember(node.member)
+                ? 'absolute left-full top-1/2 z-20 flex -translate-y-1/2 items-center'
+                : 'absolute left-full top-1/2 z-20 flex -translate-y-1/2 items-center opacity-0 -translate-x-2 pointer-events-none transition-all duration-300 ease-out group-hover:translate-x-0 group-hover:opacity-100 group-hover:pointer-events-auto'
+            "
           >
             <div class="ml-2 flex items-start gap-2">
               <span class="mt-5 text-gray-400 text-xs">♥</span>
