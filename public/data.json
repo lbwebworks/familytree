@@ -518,6 +518,30 @@
         "photo": "./photos/m20.jpg",
         "gender": "Male"
       }
+    },
+    {
+      "id": "u_d7",
+      "partnerAId": "d7",
+      "partnerB": {
+        "firstname": "Sofia",
+        "middlename": "Anne",
+        "lastname": "Rivera",
+        "nickname": "Sofie",
+        "photo": "./photos/f20.jpg",
+        "gender": "Female"
+      }
+    },
+    {
+      "id": "u_d10",
+      "partnerAId": "d10",
+      "partnerB": {
+        "firstname": "Natalie",
+        "middlename": "Rose",
+        "lastname": "Rivera",
+        "nickname": "Nat",
+        "photo": "./photos/f21.jpg",
+        "gender": "Female"
+      }
     }
   ]
 }

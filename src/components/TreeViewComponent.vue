@@ -1,6 +1,6 @@
 <script>
 import TreeList from './TreeListComponent.vue'
-import TreeChart from './TreeChartComponent.vue'
+import TreeChart from './TreeChartCouplesComponent.vue'
 
 export default {
   name: 'TreeViewComponent',
@@ -27,7 +27,7 @@ export default {
     return {
       expandedNodes: new Set(),
       viewMode: 'list',
-      maxGenerations: 3,
+      maxGenerations: 5,
     }
   },
   methods: {

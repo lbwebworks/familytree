@@ -1,5 +1,5 @@
 <script>
-import TreeChart from './components/TreeChartComponent.vue'
+import TreeChart from './components/TreeChartCouplesComponent.vue'
 import TreeList from './components/TreeListComponent.vue'
 import Members from './components/MembersComponent.vue'
 import Member from './components/MemberComponent.vue'
