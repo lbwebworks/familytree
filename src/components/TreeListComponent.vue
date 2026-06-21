@@ -186,18 +186,18 @@ export default {
 
             <div
               v-if="spouseName(member)"
-              class="absolute left-full top-1/2 z-20 hidden -translate-y-1/2 items-center group-hover:flex"
+              class="ml-0 max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-out group-hover:ml-2 group-hover:max-w-[220px] group-hover:opacity-100"
             >
-              <div class="ml-2 flex items-start gap-2">
-                <span class="mt-2 text-gray-400 text-xs">♥</span>
-                <div class="flex flex-col items-center w-10">
+              <div class="flex items-center gap-2 whitespace-nowrap">
+                <span class="text-gray-400 text-xs">♥</span>
+                <div class="flex items-center gap-2">
                   <img
                     :src="member.spousephoto || './photos/default.jpg'"
                     class="w-10 h-10 rounded-full border-2 object-cover flex-shrink-0"
                     :class="isMale(member) ? 'border-pink-200 dark:border-pink-700' : 'border-blue-200 dark:border-blue-700'"
                   />
                   <span
-                    class="mt-1 text-[11px] leading-tight text-center whitespace-nowrap"
+                    class="text-sm leading-tight whitespace-nowrap"
                     :class="isMale(member) ? 'text-pink-900 dark:text-pink-300' : 'text-blue-900 dark:text-blue-300'"
                   >
                     {{ spouseDisplayName(member) }}

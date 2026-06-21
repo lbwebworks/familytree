@@ -176,10 +176,11 @@ export default {
 
 <template>
   <div ref="scroller" class="overflow-x-auto">
-    <div
-      class="relative mx-auto min-w-full"
-      :style="{ width: `${treeLayout.width}px`, height: `${treeLayout.height}px` }"
-    >
+    <div class="flex min-w-full justify-center">
+      <div
+        class="relative flex-none"
+        :style="{ width: `${treeLayout.width}px`, height: `${treeLayout.height}px` }"
+      >
       <!-- SVG overlay for connector lines -->
       <svg class="absolute inset-0 pointer-events-none" :width="treeLayout.width" :height="treeLayout.height">
         <line
@@ -254,6 +255,7 @@ export default {
           </div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </template>
