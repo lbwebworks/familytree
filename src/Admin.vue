@@ -5,8 +5,6 @@ import Members from './components/MembersComponent.vue'
 import Member from './components/MemberComponent.vue'
 import { useTheme } from './composables/useTheme.js'
 
-const FAM_KEYS = ['budaden', 'dawey', 'lacza']
-
 export default {
   components: { TreeChart, TreeList, Members, Member },
   setup() {
@@ -77,15 +75,36 @@ export default {
   },
   created() {
     const fam = new URLSearchParams(window.location.search).get('fam')
-    const file = FAM_KEYS.includes(fam?.toLowerCase()) ? './data.json' : './dummy.json'
-    fetch(file)
-      .then((res) => res.json())
-      .then((data) => {
-        this.members = data.members
-        const rootMember = data.members.find((m) => m.parent === 'root')
-        this.root = rootMember ? rootMember.id : null
+    const normalizedFam = fam?.trim().toLowerCase()
+    const isSafeFam = !!normalizedFam && /^[a-z0-9_-]+$/i.test(normalizedFam)
+    const requestedFile = isSafeFam ? `./${normalizedFam}.json` : './data.json'
+
+    const applyData = (data) => {
+      this.members = data.members
+      const rootMember = data.members.find((m) => m.parent === 'root')
+      this.root = rootMember ? rootMember.id : null
+    }
+
+    fetch(requestedFile)
+      .then((res) => {
+        if (!res.ok) throw new Error(`Failed to load ${requestedFile}`)
+        return res.json()
       })
-      .catch((err) => console.error('Failed to load data', err))
+      .then(applyData)
+      .catch((err) => {
+        if (requestedFile === './data.json') {
+          console.error('Failed to load data', err)
+          return
+        }
+
+        fetch('./data.json')
+          .then((res) => {
+            if (!res.ok) throw new Error('Failed to load ./data.json')
+            return res.json()
+          })
+          .then(applyData)
+          .catch((fallbackErr) => console.error('Failed to load data', fallbackErr))
+      })
   },
 }
 </script>
